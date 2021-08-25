@@ -1,0 +1,12 @@
+EVGEN/
+FULL/
+LOG/
+RECO/
+*.submit
+config.json
+config.json.old
+config/
+fieldmaps/
+share/
+tracking_geometry.obj
+

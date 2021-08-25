@@ -1,0 +1,16 @@
+getenv     = True
+universe   = vanilla
+executable = %EXECUTABLE%
+arguments  = %ARGUMENTS%
+
+error  = osg_$(Cluster).$(Process).err
+output = osg_$(Cluster).$(Process).out
+log    = osg_$(Cluster).$(Process).log
+
+Requirements = HAS_SINGULARITY == TRUE
+
+request_cpus   = 1
+request_memory = 4 GB
+request_disk   = 25 GB
+
+queue %QUEUE%
