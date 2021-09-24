@@ -40,6 +40,7 @@ sed "
   s|%EXECUTABLE%|${EXECUTABLE}|g;
   s|%ARGUMENTS%|${ARGUMENTS}|g;
   s|%QUEUE%|${NUMBER_OF_TASKS}|g;
+  s|%JUGGLER_TAG%|${JUGGLER_TAG:-nightly}|g;
 " ${TEMPLATE_FILE} > ${SUBMIT_FILE}
 
 # submit job
