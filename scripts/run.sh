@@ -32,8 +32,15 @@ if [ -n "$TASK" ] ; then
 fi
 shift
 
+# clone repo
+if [ -z "${CAMPAIGNS/http*/}" ] ; then
+  echo "cloning ${CAMPAIGNS}"
+  git clone ${CAMPAIGNS} campaigns
+  CAMPAIGNS="campaigns"
+fi
+
 # dispatch job
-${CAMPAIGNS:-/opt/campaigns}/${TYPE}/scripts/run.sh ${INPUT_FILE} ${EVENTS_PER_TASK} ${TASK}
+${CAMPAIGNS:-/opt/campaigns/${TYPE}}/scripts/run.sh ${INPUT_FILE} ${EVENTS_PER_TASK} ${TASK}
 
 # closeout
 date
