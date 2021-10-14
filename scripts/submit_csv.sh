@@ -34,7 +34,7 @@ fi
 
 # Loop over input
 ${INPUT} | grep -v ^curl | while IFS="," read file ntotal dt0 dt1 ; do
-  nevents=$(echo "(3600*$TARGET-$dt0)/$dt1" | bc)
-  nchunks=$(echo "($ntotal/$nevents)" | bc)
+  nevents=$(echo "n=(3600*$TARGET-$dt0)/$dt1; if (n>$ntotal) print($ntotal) else print(n)" | bc)
+  nchunks=$(echo "n=$ntotal/$nevents; if (n==0) print(1) else print(n)" | bc)
   $(dirname $0)/submit.sh ${TEMPLATE} ${TYPE} ${file} ${nevents} ${nchunks}
 done
