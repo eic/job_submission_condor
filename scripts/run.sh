@@ -33,7 +33,7 @@ fi
 shift
 
 # clone repo
-if [ -n "${CAMPAIGNS:-}" -z "${CAMPAIGNS/http*/}" ] ; then
+if [ -n "${CAMPAIGNS:-}" -a -z "${CAMPAIGNS/http*/}" ] ; then
   echo "cloning ${CAMPAIGNS}"
   git clone ${CAMPAIGNS} campaigns
   CAMPAIGNS="campaigns"
