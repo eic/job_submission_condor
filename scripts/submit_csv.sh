@@ -27,8 +27,10 @@ shift
 
 # Parse input URI
 if [ -f "${FILE}" ] ; then
+  echo "Using local file as input"
   INPUT="cat ${FILE}"
 else
+  echo "Using ${BASEURL}${FILE}${BASEJOB} as input"
   INPUT="curl ${BASEURL}${FILE}${BASEJOB}"
 fi
 
