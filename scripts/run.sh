@@ -36,10 +36,12 @@ fi
 shift
 
 # clone repo
-if [ -n "${CAMPAIGNS:-}" -a -z "${CAMPAIGNS/http*/}" ] ; then
-  echo "cloning ${CAMPAIGNS}"
-  git clone ${CAMPAIGNS} campaigns
-  CAMPAIGNS="campaigns"
+if [ -n "${CAMPAIGNS:-}" ] ; then
+  if [ -z "${CAMPAIGNS/http*/}" ] ; then
+    echo "cloning ${CAMPAIGNS}"
+    git clone ${CAMPAIGNS} campaigns
+    CAMPAIGNS="campaigns"
+  fi
 fi
 
 # dispatch job
