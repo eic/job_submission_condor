@@ -1,4 +1,3 @@
-getenv     = True
 universe   = vanilla
 executable = %EXECUTABLE%
 arguments  = %ARGUMENTS%
@@ -8,16 +7,19 @@ error  = LOG/CONDOR/osg_$(Cluster)_$(Process).err
 output = LOG/CONDOR/osg_$(Cluster)_$(Process).out
 log    = LOG/CONDOR/osg_$(Cluster)_$(Process).log
 
+# Input file
+transfer_input_files = %ENVIRONMENT%
+
 # Send the job to Held state on failure. 
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 
 # Periodically retry the jobs every 10 minutes, up to a maximum of 2 retries.
-periodic_release =  (NumJobStarts < 2) && ((CurrentTime - EnteredCurrentStatus) > 600)
+#periodic_release =  (NumJobStarts < 2) && (HoldReasonCode == 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
 
 +ProjectName="EIC"
 +SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/jug_xl:%JUGGLER_TAG%"
 
-Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE
+Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000
 
 request_cpus   = 1
 request_memory = 3 GB
