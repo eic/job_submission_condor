@@ -2,7 +2,9 @@ EVGEN/
 FULL/
 LOG/
 RECO/
+*.log
 *.submit
+environment.sh
 config.json
 config.json.old
 config/
