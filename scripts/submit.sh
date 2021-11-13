@@ -19,7 +19,7 @@ date
 
 # Parse arguments
 # - condor template
-TEMPLATE_FILE=${1}
+TEMPLATE=${1}
 shift
 # - type of simulation
 TYPE=${1}
@@ -37,14 +37,25 @@ NUMBER_OF_TASKS=${1:-1}
 EXECUTABLE="./scripts/run.sh"
 ARGUMENTS="${TYPE} ${INPUT} ${EVENTS_PER_TASK} \$(Process)"
 
+# construct environment file
+ENVIRONMENT=environment.sh
+sed "
+  s|%S3_ACCESS_KEY%|${S3_ACCESS_KEY:-}|g;
+  s|%S3_SECRET_KEY%|${S3_SECRET_KEY:-}|g;
+  s|%S3RW_ACCESS_KEY%|${S3RW_ACCESS_KEY:-}|g;
+  s|%S3RW_SECRET_KEY%|${S3RW_SECRET_KEY:-}|g;
+" templates/${TEMPLATE}.sh.in > ${ENVIRONMENT}
+
 # construct submission file
-SUBMIT_FILE=$(basename ${TEMPLATE} .in).submit
+SUBMIT_FILE=$(basename ${TEMPLATE}.submit)
 sed "
   s|%EXECUTABLE%|${EXECUTABLE}|g;
   s|%ARGUMENTS%|${ARGUMENTS}|g;
   s|%QUEUE%|${NUMBER_OF_TASKS}|g;
   s|%JUGGLER_TAG%|${JUGGLER_TAG:-nightly}|g;
-" ${TEMPLATE_FILE} > ${SUBMIT_FILE}
+  s|%ENVIRONMENT%|${ENVIRONMENT}|g;
+" templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
 # submit job
 condor_submit ${SUBMIT_FILE}
+rm ${ENVIRONMENT}
