@@ -39,8 +39,12 @@ fi
 
 # Loop over input
 "${INPUT[@]}" | grep -v ^curl | while IFS="," read file ntotal dt0 dt1 ; do
-  nevents=$(echo "n=(3600*$TARGET-$dt0)/$dt1; if (n>$ntotal) print($ntotal) else print(n)" | bc)
-  nchunks=$(echo "n=$ntotal/$nevents; if (n==0) print(1) else print(n)" | bc)
-  echo "${file}: ${dt0}+N*${dt1} s, for ${nchunks} chunks for ${TARGET} hours. Submit? [Y,n] "
-  $(dirname $0)/submit.sh ${TEMPLATE} ${TYPE} ${file} ${nevents} ${nchunks}
+  if [[ "${file}" =~ csv$ ]] ; then
+    ${0} ${TEMPLATE} ${TYPE} ${file} ${TARGET}
+  else
+    nevents=$(echo "n=(3600*$TARGET-$dt0)/$dt1; if (n>$ntotal) print($ntotal) else print(n)" | bc)
+    nchunks=$(echo "n=$ntotal/$nevents; if (n==0) print(1) else print(n)" | bc)
+    echo "${file}: ${dt0}+N*${dt1} s, for ${nchunks} chunks for ${TARGET} hours. Submit? [Y,n] "
+    $(dirname $0)/submit.sh ${TEMPLATE} ${TYPE} ${file} ${nevents} ${nchunks}
+  fi
 done | tee $(basename ${FILE} .csv)-$(date --iso-8601=minutes).log
