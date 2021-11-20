@@ -58,4 +58,3 @@ sed "
 
 # submit job
 condor_submit ${SUBMIT_FILE}
-rm ${ENVIRONMENT}
