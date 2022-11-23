@@ -28,23 +28,40 @@ shift
 TARGET=${1:-2}
 shift
 
-# Parse input URI
-if [ -f "${FILE}" ] ; then
-  echo "Using local file as input"
-  INPUT=(cat ${FILE})
-else
-  echo "Using ${BASEURL}${FILE}${BASEJOB} as input"
-  INPUT=(curl ${BASEURL}${FILE}${BASEJOB})
-fi
+# process csv file into jobs
+CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
 
-# Loop over input
-"${INPUT[@]}" | grep -v ^curl | while IFS="," read file ntotal dt0 dt1 ; do
-  if [[ "${file}" =~ csv$ ]] ; then
-    ${0} ${TEMPLATE} ${TYPE} ${file} ${TARGET}
-  else
-    nevents=$(echo "n=(3600*$TARGET-$dt0)/$dt1; if (n>$ntotal) print($ntotal) else print(n)" | bc)
-    nchunks=$(echo "n=$ntotal/$nevents; if (n==0) print(1) else print(n)" | bc)
-    echo "${file}: ${dt0}+N*${dt1} s, for ${nchunks} chunks for ${TARGET} hours. Submit? [Y,n] "
-    $(dirname $0)/submit.sh ${TEMPLATE} ${TYPE} ${file} ${nevents} ${nchunks}
-  fi
-done | tee $(basename ${FILE} .csv)-$(date --iso-8601=minutes).log
+# create command line
+EXECUTABLE="./scripts/run.sh"
+ARGUMENTS="${TYPE} \$(file) \$(nevents) \$(ichunk)"
+
+# construct environment file
+ENVIRONMENT=environment.sh
+sed "
+  s|%S3_ACCESS_KEY%|${S3_ACCESS_KEY:-}|g;
+  s|%S3_SECRET_KEY%|${S3_SECRET_KEY:-}|g;
+  s|%S3RW_ACCESS_KEY%|${S3RW_ACCESS_KEY:-}|g;
+  s|%S3RW_SECRET_KEY%|${S3RW_SECRET_KEY:-}|g;
+  s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
+  s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
+  s|%EBEAM%|${EBEAM}|g;
+  s|%PBEAM%|${PBEAM}|g;
+" templates/${TEMPLATE}.sh.in > ${ENVIRONMENT}
+
+# construct requirements
+REQUIREMENTS=""
+
+# construct submission file
+SUBMIT_FILE=$(basename ${TEMPLATE}.submit)
+sed "
+  s|%EXECUTABLE%|${EXECUTABLE}|g;
+  s|%ARGUMENTS%|${ARGUMENTS}|g;
+  s|%JUG_XL_TAG%|${JUG_XL_TAG:-nightly}|g;
+  s|%ENVIRONMENT%|${ENVIRONMENT}|g;
+  s|%REQUIREMENTS%|${REQUIREMENTS}|g;
+  s|%CSV_FILE%|${CSV_FILE}|g;
+" templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
+
+# submit job
+condor_submit ${SUBMIT_FILE}
+

@@ -1,7 +1,9 @@
 EVGEN/
 FULL/
 LOG/
+HOLD/
 RECO/
+*.csv
 *.log
 *.submit
 environment.sh
@@ -11,4 +13,6 @@ config/
 fieldmaps/
 share/
 tracking_geometry.obj
-
+all_flags_dump_from_run.py
+JobReport
+.gwms-user-job-wrapper.sh

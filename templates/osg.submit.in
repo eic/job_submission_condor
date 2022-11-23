@@ -19,10 +19,10 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 +ProjectName="EIC"
 +SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/jug_xl:%JUGGLER_TAG%"
 
-Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000
+Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && GLIDEIN_ResourceName != "Purdue-Geddes" && GLIDEIN_ResourceName != "TCNJ-ELSA" && GLIDEIN_ResourceName != "UConn-OSG" && GLIDEIN_ResourceName != "NWICG_NDCMS" && GLIDEIN_ResourceName != "OSG_US_FSU_HNPGRID" && GLIDEIN_ResourceName != "ASU-DELL_M420" && GLIDEIN_ResourceName != "GPN-GP-ARGO-Backfill" && GLIDEIN_ResourceName != "AGLT2" && GLIDEIN_ResourceName != "TACC-Jetstream-Backfill" && GLIDEIN_ResourceName != "MWT2" && GLIDEIN_ResourceName != "GLOW" && GLIDEIN_ResourceName != "CHTC" && GLIDEIN_ResourceName != "NDSU-Lancium-Backfill"
 
 request_cpus   = 1
-request_memory = 3 GB
-request_disk   = 25 GB
+request_memory = 2 GB
+request_disk   = 2 GB
 
 queue %QUEUE%

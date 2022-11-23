@@ -1,0 +1,30 @@
+universe   = vanilla
+executable = %EXECUTABLE%
+arguments  = %ARGUMENTS%
+
+# Log files
+error  = LOG/CONDOR/osg_$(Cluster)_$(Process).err
+output = LOG/CONDOR/osg_$(Cluster)_$(Process).out
+log    = LOG/CONDOR/osg_$(Cluster)_$(Process).log
+
+# Input file
+transfer_input_files = %ENVIRONMENT%
+
+# Send the job to Held state on failure. 
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+
+# Periodically retry the jobs every 10 minutes, up to a maximum of 2 retries.
+#periodic_release =  (NumJobStarts < 2) && (HoldReasonCode == 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
++ProjectName="EIC"
++SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/jug_xl:%JUG_XL_TAG%"
+
+Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && HAS_XRDCP == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && Memory >= 2500 && GLIDEIN_ResourceName != "Purdue-Geddes" && GLIDEIN_ResourceName != "TCNJ-ELSA" && GLIDEIN_ResourceName != "UConn-OSG" && GLIDEIN_ResourceName != "NWICG_NDCMS" && GLIDEIN_ResourceName != "OSG_US_FSU_HNPGRID" && GLIDEIN_ResourceName != "ASU-DELL_M420" && GLIDEIN_ResourceName != "GPN-GP-ARGO-Backfill" && GLIDEIN_ResourceName != "AGLT2" && GLIDEIN_ResourceName != "TACC-Jetstream-Backfill" && GLIDEIN_ResourceName != "MWT2" && GLIDEIN_ResourceName != "GLOW" && GLIDEIN_ResourceName != "CHTC" && GLIDEIN_ResourceName != "NDSU-Lancium-Backfill" && GLIDEIN_ResourceName != "GPGrid" && GLIDEIN_ResourceName != "Lancium-PEP" && GLIDEIN_ResourceName != "Crane" && GLIDEIN_ResourceName != "SDSC-PRP-OSPool-Provisioner" && GLIDEIN_ResourceName != "IU-Jetstream2-Backfill" && GLIDEIN_ResourceName != "UColorado_HEP"
+
+request_cpus   = 1
+request_memory = 3 GB
+request_disk   = 25 GB
+
+max_idle = 100
+
+queue file,nevents,ichunk from %CSV_FILE%
