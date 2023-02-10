@@ -35,7 +35,7 @@ fi
 output=$(basename ${FILE} .csv)-$(date --iso-8601=minutes).csv
 
 # Loop over input
-"${INPUT[@]}" | grep -v ^curl | while IFS="," read file ntotal dt0 dt1 ; do
+"${INPUT[@]}" | grep -v ^curl | while IFS="," read file ext ntotal dt0 dt1 ; do
   if [[ "${file}" =~ csv$ ]] ; then
     ${0} ${TEMPLATE} ${TYPE} ${file} ${TARGET}
   else
@@ -44,7 +44,7 @@ output=$(basename ${FILE} .csv)-$(date --iso-8601=minutes).csv
     nevents=$(echo "scale=0; $ntotal/$nchunks" | bc -l)
     actualt=$(echo "scale=2; ($dt0+$nevents*$dt1)/3600" | bc -l)
     for ichunk in `seq 0 $((nchunks-1))` ; do
-      echo "${file},${nevents},${ichunk}"
+      echo "${file},${ext},${nevents},$(printf '%04d' $ichunk)"
     done
   fi
 done > ${output}
