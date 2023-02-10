@@ -7,9 +7,11 @@ RECO/
 *.log
 *.submit
 environment.sh
+environment-*.sh
 config.json
 config.json.old
 config/
+secrets/
 fieldmaps/
 share/
 tracking_geometry.obj
