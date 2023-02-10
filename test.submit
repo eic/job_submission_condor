@@ -1,0 +1,13 @@
+universe = vanilla
+executable = test.sh
+
+output = test.out
+error = test.err
+log = test.log
+
+should_transfer_files = Yes
+when_to_transfer_output = ON_EXIT
+
+#+ProjectName = "EIC"
+
+queue
