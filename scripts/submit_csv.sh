@@ -33,10 +33,10 @@ CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
 
 # create command line
 EXECUTABLE="./scripts/run.sh"
-ARGUMENTS="${TYPE} \$(file) \$(nevents) \$(ichunk)"
+ARGUMENTS="${TYPE} EVGEN/\$(file).\$(ext) \$(nevents) \$(ichunk)"
 
 # construct environment file
-ENVIRONMENT=environment.sh
+ENVIRONMENT=environment-$(date --iso-8601=minutes).sh
 sed "
   s|%S3_ACCESS_KEY%|${S3_ACCESS_KEY:-}|g;
   s|%S3_SECRET_KEY%|${S3_SECRET_KEY:-}|g;
@@ -51,17 +51,31 @@ sed "
 # construct requirements
 REQUIREMENTS=""
 
+# construct input files
+INPUT_FILES=${ENVIRONMENT}
+if [[ "${TYPE}" =~ single ]] ; then
+  INPUT_FILES="${INPUT_FILES}, s3://eics3.sdcc.bnl.gov:9000/eictest/EPIC/EVGEN/\$(file).\$(ext)"
+fi
+
 # construct submission file
-SUBMIT_FILE=$(basename ${TEMPLATE}.submit)
+SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
 sed "
   s|%EXECUTABLE%|${EXECUTABLE}|g;
   s|%ARGUMENTS%|${ARGUMENTS}|g;
   s|%JUG_XL_TAG%|${JUG_XL_TAG:-nightly}|g;
-  s|%ENVIRONMENT%|${ENVIRONMENT}|g;
+  s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
+  s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
+  s|%INPUT_FILES%|${INPUT_FILES}|g;
   s|%REQUIREMENTS%|${REQUIREMENTS}|g;
   s|%CSV_FILE%|${CSV_FILE}|g;
 " templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
 # submit job
-condor_submit ${SUBMIT_FILE}
+condor_submit -verbose -file ${SUBMIT_FILE}
 
+# create log dir
+if [ $? -eq 0 ] ; then
+  for i in `condor_q | grep ^wdconinc | tail -n1 | awk '{print($10)}' | cut -d. -f1` ; do
+    mkdir -p LOG/CONDOR/osg_$i/
+  done
+fi
