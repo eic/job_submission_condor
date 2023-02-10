@@ -29,10 +29,6 @@ EVENTS_PER_TASK=${1:-10000}
 shift
 # - current chunk
 TASK=${1:-}
-if [ -n "$TASK" ] ; then
-  # increment since condor starts at 0
-  TASK=$((TASK+1))
-fi
 shift
 
 # clone repo
