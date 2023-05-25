@@ -42,6 +42,6 @@ When submitting 10k to 100k jobs, dealing with failing jobs has two options: don
 
 ## 2 EIC Virtual Organization
 
-JLab has now has an access node that can support the EIC Virtual Organization.
+JLab now has an access node that can support the EIC Virtual Organization.
 
 BNL had their setup messed up and jobs only got farmed to a single site at UCSD, which is likely not been fixed yet. BNL is also a messed up system of many individual interactive nodes and you have to know which one to go to to do any specific thing.
