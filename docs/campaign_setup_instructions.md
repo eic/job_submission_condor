@@ -19,11 +19,11 @@ OSG does impose conditions on jobs, in particular short jobs (2 hours) and ideal
 OSG uses Htcondor for job submissions. Htcondor takes care of the S3 transfer of simulation products which greatly facilitates the job management compared to slurm.
 Htcondor puts failed jobs in a hold state which greatly facilitates triaging failures and simply resubmitting if it was a transient (as is typical).
 
+### 1.5 Setting up campaign 
+To set up the running environment (cloning [this repository](https://github.com/eic/job_submission_condor) and setting up the secret access key), ask the production WG for help in the sim-prod mattermost channel.  
 
 
-
-
-## EIC Virtual Organization
+## 2 EIC Virtual Organization
 
 JLab has now has an access node that can support the EIC Virtual Organization.
 
