@@ -1,32 +1,36 @@
 # Instructions for Running a Simulation Campaign on the Open Science Grid
 
-## 1 Getting an account
+## 1 OSGConnect
 
-### 1.1 OSGconnect
+### 1.1 Getting an account
 Follow the instructions at 
 https://portal.osg-htc.org/documentation/overview/account_setup/connect-access/
 to get an osgconnect account and add yourself to the osg.EIC project.
 
-Once your account is setup, you can login to login05.osgconnect.net. This method is still currently in use for historical reasons (single point of access, no lab account needed, intended for accessibility for foreign users). However, once we setup the new project under EIC virtual orgnanization, we will stop using this. 
+Once your account is setup, you can login to login05.osgconnect.net. This method is still currently in use for historical reasons (single point of access, no lab account needed, intended for accessibility for foreign users). 
 
-### 1.2 EIC Virtual Organization
+### 1.2 Node Availability 
+OSG typically has many times more free nodes than the combined JLab and BNL allocation to EIC. 
+
+### 1.3 Restrictions
+OSG does impose conditions on jobs, in particular short jobs (2 hours) and ideally self-contained jobs that don't talk to the generic internet (xrootd is ok). 
+
+### 1.4 HTCondor
+OSG uses Htcondor for job submissions. Htcondor takes care of the S3 transfer of simulation products which greatly facilitates the job management compared to slurm.
+Htcondor puts failed jobs in a hold state which greatly facilitates triaging failures and simply resubmitting if it was a transient (as is typical).
+
+
+
+
+
+## EIC Virtual Organization
+
 JLab has now has an access node that can support the EIC Virtual Organization.
 
 BNL had their setup messed up and jobs only got farmed to a single site at UCSD, which is likely not been fixed yet. BNL is also a messed up system of many individual interactive nodes and you have to know which one to go to to do any specific thing.
 
 
 ## 2 Features of OSG
-
-### 2.1 Node Availability 
-OSG typically has many times more free nodes than the combined JLab and BNL allocation to EIC. 
-
-### 2.2 Restrictions
-OSG does impose conditions on jobs, in particular short jobs (2 hours) and ideally self-contained jobs that don't talk to the generic internet (xrootd is ok). 
-
-### 2.3 HTCondor
-OSG uses Htcondor for job submissions. Htcondor takes care of the S3 transfer of simulation products which greatly facilitates the job management compared to slurm.
-Htcondor puts failed jobs in a hold state which greatly facilitates triaging failures and simply resubmitting if it was a transient (as is typical).
-
 
 
 Job scripts, whether htcondor or slurm, are all starting jobs inside the eic-shell container on /cvmfs/singularity.opensciencegrid.org/, the same image that users see in eic-shell (though a pinned stable version, typically). Here are the job submission scripts:
