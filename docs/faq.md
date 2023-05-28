@@ -1,9 +1,9 @@
-### Frequently Asked Questions ###
+# Frequently Asked Questions ###
 
 
 ## Common Errors ##
 
-# Example 1
+### Example 1
 
 * Scenario 
  
