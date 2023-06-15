@@ -75,7 +75,7 @@ condor_submit -verbose -file ${SUBMIT_FILE}
 
 # create log dir
 if [ $? -eq 0 ] ; then
-  for i in `condor_q | grep ^wdconinc | tail -n1 | awk '{print($10)}' | cut -d. -f1` ; do
+  for i in `condor_q | grep ^${USER} | tail -n1 | awk '{print($10)}' | cut -d. -f1` ; do
     mkdir -p LOG/CONDOR/osg_$i/
   done
 fi
