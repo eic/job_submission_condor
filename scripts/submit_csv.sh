@@ -11,7 +11,7 @@ if [ $# -lt 2 ] ; then
 fi
 
 # Project configuration
-BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/main/raw/results/datasets/timings/"
+BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/${DETECTOR_VERSION}/raw/results/datasets/timings/"
 BASEJOB="?job=collect"
 
 # Parse arguments
