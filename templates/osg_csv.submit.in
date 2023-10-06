@@ -35,7 +35,7 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 +ProjectName="ePIC"
 +SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/jug_xl:%JUG_XL_TAG%"
 
-Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && HAS_XRDCP == TRUE && OSG_HOST_KERNEL_VERSION >= 31000
+Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && HAS_XRDCP == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && MappedUser == TRUE
 
 +UNDESIRED_Sites = "AMNH"
 # AMNH nodes block connections over web
