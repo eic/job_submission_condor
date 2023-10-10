@@ -37,8 +37,9 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 
 Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && HAS_XRDCP == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && MappedUser == TRUE
 
-+UNDESIRED_Sites = "AMNH"
++UNDESIRED_Sites = "AMNH, BEOCAT-SLATE, FNAL_GPGrid"
 # AMNH nodes block connections over web
+# BE0CAT-SLATE, FNAL_GPGrid cannot read input files
 
 request_cpus   = 1
 request_memory = 2.5 GB
