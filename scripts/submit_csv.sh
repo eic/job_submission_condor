@@ -53,9 +53,6 @@ REQUIREMENTS=""
 
 # construct input files
 INPUT_FILES=${ENVIRONMENT}
-if [[ "${TYPE}" =~ single ]] ; then
-  INPUT_FILES="${INPUT_FILES}, s3://eics3.sdcc.bnl.gov:9000/eictest/EPIC/EVGEN/\$(file).\$(ext)"
-fi
 
 # construct submission file
 SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
