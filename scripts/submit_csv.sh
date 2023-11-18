@@ -120,18 +120,3 @@ elif [ ${SYSTEM} = "slurm" ]; then
 else
   echo "Enter a valid SYSTEM value (condor or slurm)"
 fi
-
-
-
-
-
-
-
-condor_submit -verbose -file ${SUBMIT_FILE}
-
-# create log dir
-if [ $? -eq 0 ] ; then
-  for i in `condor_q | grep ^${USER} | tail -n1 | awk '{print($NF)}' | cut -d. -f1` ; do
-    mkdir -p LOG/CONDOR/osg_$i/
-  done
-fi
