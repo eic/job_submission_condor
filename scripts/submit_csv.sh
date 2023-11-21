@@ -113,7 +113,7 @@ elif [ ${SYSTEM} = "slurm" ]; then
 
   # create log dir
   if [ $? -eq 0 ] ; then
-    for i in `squeue -u ${USER} | tail -n1 | awk -F" |_" '{print($1)}' | cut -d. -f1` ; do
+    for i in `squeue -u ${USER} | tail -n1 |  awk '{$1=$1; print}' | awk -F" |_" '{print($1)}' | cut -d. -f1` ; do
       mkdir -p ${CAMPAIGN_LOG:-$PWD}/LOG/SLURM/slurm_$i/
     done
   fi
