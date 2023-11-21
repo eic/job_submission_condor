@@ -89,7 +89,7 @@ sed "
   s|%INPUT_FILES%|${INPUT_FILES}|g;
   s|%REQUIREMENTS%|${REQUIREMENTS}|g;
   s|%CSV_FILE%|${CSV_FILE}|g;
-  s|%ACCOUNT%|${ACCOUNT:-rrg-wdconinc}|g;
+  s|%ACCOUNT%|${ACCOUNT:?Define ACCOUNT with the slurm account}|g;
   s|%CAMPAIGN_LOG%|${CAMPAIGN_LOG:-$PWD}|g;
   s|%TARGET%|$TARGET|g;
   s|%NJOBS%|${NJOBS}|g;
