@@ -17,6 +17,6 @@ echo $ichunk
 
 cat << EOF | $(dirname %EXECUTABLE%)/eic-shell
 
-%EXECUTABLE% %ARGUMENTS% $file $ext $nevents $ichunk
+%EXECUTABLE% %ARGUMENTS% ${file}.${ext} ${nevents} ${ichunk}
 
 EOF
