@@ -44,7 +44,7 @@ condor_q ${*} -constraint 'JobStatus == 5' -af ClusterID ProcID NumJobStarts | w
       n=$((n+1))
       continue
     fi
-    if grep "tracepath: dtn01.sdcc.bnl.gov: Temporary failure in name resolution" ${prefix}.err ; then
+    if grep "tracepath: eics3.sdcc.bnl.gov: Temporary failure in name resolution" ${prefix}.err ; then
       grep hostname ${prefix}.out
       grep -A20 tracepath ${prefix}.out
       read <&1
