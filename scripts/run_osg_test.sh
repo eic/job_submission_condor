@@ -51,7 +51,7 @@ function retry {
 
 # S3 locations
 MC="/usr/local/bin/mc"
-S3URL="https://dtn01.sdcc.bnl.gov:9000"
+S3URL="https://eics3.sdcc.bnl.gov:9000"
 S3RO="S3"
 S3RODIR="${S3RO}/eictest/EPIC"
 
