@@ -51,7 +51,7 @@ function retry {
 
 # S3 locations
 MC="/usr/local/bin/mc"
-S3URL="https://dtn01.sdcc.bnl.gov:9000"
+S3URL="https://eics3.sdcc.bnl.gov:9000"
 S3RO="S3"
 S3RODIR="${S3RO}/eictest/EPIC"
 
@@ -84,8 +84,8 @@ if curl --connect-timeout 30 --retry 5 --silent --show-error ${S3URL} > /dev/nul
 else
   echo "$(hostname) is NOT online."
   if which tracepath ; then
-    echo "tracepath -b -p 9000 dtn01.sdcc.bnl.gov"
-    tracepath -b -p 9000 dtn01.sdcc.bnl.gov
+    echo "tracepath -b -p 9000 eics3.sdcc.bnl.gov"
+    tracepath -b -p 9000 eics3.sdcc.bnl.gov
     echo "tracepath -b www.bnl.gov"
     tracepath -b www.bnl.gov
     echo "tracepath -b google.com"
