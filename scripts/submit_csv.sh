@@ -32,7 +32,7 @@ shift
 CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
 
 # create command line
-EXECUTABLE="./scripts/run.sh"
+EXECUTABLE="$(dirname $0)/run.sh"
 ARGUMENTS="${TYPE} EVGEN/\$(file).\$(ext) \$(nevents) \$(ichunk)"
 
 # construct environment file
