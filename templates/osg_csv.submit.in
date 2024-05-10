@@ -43,12 +43,8 @@ Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_
 # UChicago denied access to cvmfs container files
 # Wisconsin Date errors
 
-
 request_cpus   = 1
 request_memory = 2.5 GB
 request_disk   = 5 GB
-
-max_idle = 100
-max_materialize = 500
 
 queue file,ext,nevents,ichunk from %CSV_FILE%
