@@ -36,4 +36,6 @@ request_cpus   = 1
 request_memory = 3.5 GB
 request_disk   = 5 GB
 
+max_idle = 500
+
 queue file,ext,nevents,ichunk from %CSV_FILE%
