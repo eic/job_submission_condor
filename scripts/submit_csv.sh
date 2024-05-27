@@ -43,10 +43,10 @@ ARGUMENTS="${TYPE} EVGEN/\$(file).\$(ext) \$(nevents) \$(ichunk)"
 # construct environment file
 ENVIRONMENT=environment-$(date --iso-8601=minutes).sh
 sed "
-  s|%S3_ACCESS_KEY%|${S3_ACCESS_KEY:-}|g;
-  s|%S3_SECRET_KEY%|${S3_SECRET_KEY:-}|g;
-  s|%S3RW_ACCESS_KEY%|${S3RW_ACCESS_KEY:-}|g;
-  s|%S3RW_SECRET_KEY%|${S3RW_SECRET_KEY:-}|g;
+  s|%COPYRECO%|${COPYRECO:-}|g;
+  s|%COPYFULL%|${COPYFULL:-}|g;
+  s|%COPYLOG%|${COPYLOG:-}|g;
+  s|%BEARER_TOKEN%|${BEARER_TOKEN:-}|g;
   s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
