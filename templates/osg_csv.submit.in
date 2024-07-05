@@ -15,6 +15,18 @@ log    = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).log
 # Input file
 transfer_input_files = %INPUT_FILES%
 
+# Output files
+ s3_access_key_id_file = ./secrets/accessKeyID
+ s3_secret_access_key_file = ./secrets/secretAccessKey
+ output_destination = s3://eics3.sdcc.bnl.gov:9000/eictest/EPIC/
+ transfer_output_files = \
+   RECO/%DETECTOR_VERSION%/%DETECTOR_CONFIG%/$(file).$(ichunk).eicrecon.tree.edm4eic.root, \
+   LOG/%DETECTOR_VERSION%/%DETECTOR_CONFIG%/$(file).$(ichunk).npsim.log, \
+   LOG/%DETECTOR_VERSION%/%DETECTOR_CONFIG%/$(file).$(ichunk).npsim.prmon.txt, \
+   LOG/%DETECTOR_VERSION%/%DETECTOR_CONFIG%/$(file).$(ichunk).eicrecon.log, \
+   LOG/%DETECTOR_VERSION%/%DETECTOR_CONFIG%/$(file).$(ichunk).eicrecon.prmon.txt
+
+
 # Send the job to Held state on failure. 
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 
@@ -25,6 +37,7 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 +SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:%JUG_XL_TAG%"
 
 Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000
+
 
 +UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin,UChicago"
 # AMNH nodes block connections over web
