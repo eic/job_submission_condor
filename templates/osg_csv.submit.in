@@ -10,7 +10,7 @@ output = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).out
 log    = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).log
 
 # OAuth services (https://jlab.servicenowservices.com/kb_view.do?sysparm_article=KB0014968)
-#use_oauth_services = jlab_eic.use
+use_oauth_services = eic
 
 # Input file
 transfer_input_files = %INPUT_FILES%
