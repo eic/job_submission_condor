@@ -35,7 +35,7 @@ fi
 output=$(basename ${FILE} .csv)-$(date --iso-8601=minutes).csv
 
 # Loop over input
-"${INPUT[@]}" | grep -v ^curl | while IFS="," read file ext ntotal dt0 dt1 ; do
+"${INPUT[@]}" | grep -v ^curl | while IFS="," read file ext ntotal dt0 dt1 duf0 duf1 dur0 dur1 ; do
   if [[ "${file}" =~ csv$ ]] ; then
     ${0} ${TEMPLATE} ${TYPE} ${file} ${TARGET}
   else
