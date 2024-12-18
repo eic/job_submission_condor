@@ -19,7 +19,7 @@ date
 
 # Parse arguments
 # - type of simulation
-TYPE=${1}
+EXT=${1}
 shift
 # - input file
 INPUT_FILE=${1}
@@ -41,7 +41,7 @@ if [ -n "${CAMPAIGNS:-}" ] ; then
 fi
 
 # dispatch job
-${CAMPAIGNS:-/opt/campaigns/${TYPE}}/scripts/run.sh ${INPUT_FILE} ${EVENTS_PER_TASK} ${TASK}
+${CAMPAIGNS:-/opt/campaigns/hepmc3}/scripts/run.sh ${EXT} ${INPUT_FILE} ${EVENTS_PER_TASK} ${TASK}
 
 # closeout
 date
