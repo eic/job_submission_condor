@@ -38,7 +38,7 @@ fi
 
 # create command line
 EXECUTABLE="$(dirname $0)/run.sh"
-ARGUMENTS="\$(ext) EVGEN/\$(file) \$(nevents) \$(ichunk)"
+ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # construct environment file
 ENVIRONMENT=environment-$(date --iso-8601=minutes).sh
