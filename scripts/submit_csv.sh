@@ -85,7 +85,7 @@ if [[ ${TEMPLATE} =~ slurm ]] ; then
     let taskN=${NUM_JOBS}
     let task0=${NUM_JOBS}-${max_array_size}+1
     if [ ${task0} -lt 0 ] ; then task0=0 ; fi
-    echo sbatch --array=${task0}-${taskN} ${SUBMIT_FILE}
+    sbatch --array=${task0}-${taskN} ${SUBMIT_FILE}
     let NUM_JOBS=${NUM_JOBS}-${max_array_size}
   done
 
