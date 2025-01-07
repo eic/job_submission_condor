@@ -4,9 +4,9 @@ trap 's=$?; echo "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 IFS=$'\n\t'
 
 # Set url for frequency tables
-EGAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/main/config_data/egas_freq.csv
-HGAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/main/config_data/hgas_freq.csv
-MINBIAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/main/config_data/minbias_freq.csv
+EGAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/${DETECTOR_VERSION}/config_data/egas_freq.csv
+HGAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/${DETECTOR_VERSION}/config_data/hgas_freq.csv
+MINBIAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/${DETECTOR_VERSION}/config_data/minbias_freq.csv
 
 # Download tables
 EGAS_TABLE=$( curl -L ${EGAS_URL} )
