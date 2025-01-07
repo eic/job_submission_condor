@@ -9,9 +9,9 @@ HGAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/main
 MINBIAS_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/main/config_data/minbias_freq.csv
 
 # Download tables
-EGAS_TABLE=(curl ${EGAS_URL})
-HGAS_TABLE=(curl ${HGAS_URL})
-MINBIAS_TABLE=(curl ${MINBIAS_URL})
+EGAS_TABLE=$( curl -L ${EGAS_URL} )
+HGAS_TABLE=$( curl -L ${HGAS_URL} )
+MINBIAS_TABLE=$( curl -L ${MINBIAS_URL} )
 
 # Initialize associative arrays (maps) for each type of background
 declare -A EGAS_MAP
@@ -26,8 +26,7 @@ process_lines() {
 
     while IFS=',' read -r key value; do
         # Adding the line to the map with a simple index as the key
-        map_ref[$index]="$key,$value"
-        index=$((index + 1))
+        map_ref[$key]="$value"
     done <<< "$data"
 }
 
@@ -39,3 +38,7 @@ process_lines "$MINBIAS_TABLE" MINBIAS_MAP
 export BG1_FREQ=${EGAS_MAP[${EBEAM}x${PBEAM}_${EVAC}]}
 export BG2_FREQ=${HGAS_MAP[${EBEAM}x${PBEAM}_${HVAC}]}
 export BG3_FREQ=${MINBIAS_MAP[${EBEAM}x${PBEAM}]}
+
+echo "Electron Beam Gas Frequency:" $BG1_FREQ
+echo "Hadron Beam Gas Frequency:" $BG2_FREQ
+echo "Minbias Backgrounds Frequency:" $BG3_FREQ
