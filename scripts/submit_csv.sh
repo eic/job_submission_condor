@@ -57,7 +57,7 @@ sed "
 REQUIREMENTS=""
 
 # construct input files
-INPUT_FILES=${ENVIRONMENT}
+INPUT_FILES=${ENVIRONMENT},${X509_USER_PROXY}
 
 # construct submission file
 SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
