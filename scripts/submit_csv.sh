@@ -48,6 +48,8 @@ sed "
   s|%COPYLOG%|${COPYLOG:-}|g;
   s|%USERUCIO%|${USERUCIO:-}|g;
   s|%X509_USER_PROXY%|${$(basename $X509_USER_PROXY):-}|g;
+  s|%TAG_PREFIX%|${TAG_PREFIX:-}|g;
+  s|%TAG_SUFFIX%|${TAG_SUFFIX:-}|g;
   s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
