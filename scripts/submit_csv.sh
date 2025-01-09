@@ -46,6 +46,8 @@ sed "
   s|%COPYRECO%|${COPYRECO:-}|g;
   s|%COPYFULL%|${COPYFULL:-}|g;
   s|%COPYLOG%|${COPYLOG:-}|g;
+  s|%USERUCIO%|${USERUCIO:-}|g;
+  s|%X509_USER_PROXY%|${$(basename $X509_USER_PROXY):-}|g;
   s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
@@ -56,7 +58,7 @@ sed "
 REQUIREMENTS=""
 
 # construct input files
-INPUT_FILES=${ENVIRONMENT}
+INPUT_FILES=${ENVIRONMENT},${X509_USER_PROXY}
 
 # construct submission file
 SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
