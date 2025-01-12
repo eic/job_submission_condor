@@ -42,12 +42,16 @@ ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # construct environment file
 ENVIRONMENT=environment-$(date --iso-8601=minutes).sh
+
+# extract certificate name
+X509_USER_PROXY_BASE=$(basename ${X509_USER_PROXY:-})
+
 sed "
   s|%COPYRECO%|${COPYRECO:-}|g;
   s|%COPYFULL%|${COPYFULL:-}|g;
   s|%COPYLOG%|${COPYLOG:-}|g;
   s|%USERUCIO%|${USERUCIO:-}|g;
-  s|%X509_USER_PROXY%|${$(basename $X509_USER_PROXY):-}|g;
+  s|%X509_USER_PROXY%|${X509_USER_PROXY_BASE:-}|g;
   s|%TAG_PREFIX%|${TAG_PREFIX:-}|g;
   s|%TAG_SUFFIX%|${TAG_SUFFIX:-}|g;
   s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
