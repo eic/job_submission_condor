@@ -24,7 +24,7 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 +ProjectName="ePIC"
 +SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:%JUG_XL_TAG%"
 
-Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000
+Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && TARGET.Microarch >= "x86-64_v2"
 
 
 +UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin"
