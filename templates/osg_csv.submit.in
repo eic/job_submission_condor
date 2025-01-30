@@ -26,11 +26,11 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 
 Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && TARGET.Microarch >= "x86_64-v2"
 
-
-+UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin,GATech,OSG_US_FSU_HNPGRID"
++UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin,GATech,OSG_US_FSU_HNPGRID,Alabama-CHPC"
 # AMNH nodes block connections over web
 # BE0CAT-SLATE, FNAL_GPGrid, FNAL, GATech cannot read input files
 # OSG_US_FSU_HNPGRID cannot connect to logging RSE
+# Alabama-CHPC cannot connect to JLAB Rucio service
 # Wisconsin Date errors
 
 request_cpus   = 1
