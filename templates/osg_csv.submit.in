@@ -34,7 +34,7 @@ Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_
 # Wisconsin Date errors
 
 request_cpus   = 1
-request_memory = 2.5 GB
+request_memory = 3.0 GB
 request_disk   = 5 GB
 
 max_idle = 500
