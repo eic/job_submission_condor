@@ -20,8 +20,8 @@ declare -A EGAS_FILE EGAS_FREQ EGAS_SKIP HGAS_FILE HGAS_FREQ HGAS_SKIP SYNRAD_FI
 process_lines() {
     local data="$1"
     local -n map_file="$2"
-    local -n map_freq="$3$
-    local -n map_skip=$4$
+    local -n map_freq="$3"
+    local -n map_skip="$4"
     local index=0
 
     while IFS=',' read -r config file freq skip; do
