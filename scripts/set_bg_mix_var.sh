@@ -11,7 +11,7 @@ SYNRAD_URL=https://raw.githubusercontent.com/eic/simulation_campaign_datasets/ma
 # Download tables
 EGAS_TABLE=$( curl -L ${EGAS_URL} )
 HGAS_TABLE=$( curl -L ${HGAS_URL} )
-SYNRAD_TABLE=$( curl -L ${MINBIAS_URL} )
+SYNRAD_TABLE=$( curl -L ${SYNRAD_URL} )
 
 # Initialize associative arrays (maps) for each type of background
 declare -A EGAS_FILE EGAS_FREQ EGAS_SKIP HGAS_FILE HGAS_FREQ HGAS_SKIP SYNRAD_FILE SYNRAD_FREQ SYNRAD_SKIP
