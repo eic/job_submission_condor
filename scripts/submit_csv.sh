@@ -58,6 +58,16 @@ sed "
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
   s|%PBEAM%|${PBEAM}|g;
+  s|%SIG_FREQ%|${SIG_FREQ}|g;
+  s|%BG1_FILE%|${BG1_FILE}|g;
+  s|%BG1_FREQ%|${BG1_FREQ}|g;
+  s|%BG1_SKIP%|${BG1_SKIP}|g;
+  s|%BG2_FILE%|${BG2_FILE}|g;
+  s|%BG2_FREQ%|${BG2_FREQ}|g;
+  s|%BG2_SKIP%|${BG2_SKIP}|g;
+  s|%BG3_FILE%|${BG3_FILE}|g;
+  s|%BG3_FREQ%|${BG3_FREQ}|g;
+  s|%BG3_SKIP%|${BG3_SKIP}|g;
 " templates/${TEMPLATE}.sh.in > ${ENVIRONMENT}
 
 # construct requirements
