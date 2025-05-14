@@ -40,6 +40,9 @@ fi
 EXECUTABLE="$(dirname $0)/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
+# Set background environment variables
+source $(dirname $0)/set_bg_mix_var.sh
+
 # construct environment file
 ENVIRONMENT=environment-$(date --iso-8601=minutes).sh
 
