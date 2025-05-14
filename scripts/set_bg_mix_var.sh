@@ -14,31 +14,37 @@ HGAS_TABLE=$( curl -L ${HGAS_URL} )
 SYNRAD_TABLE=$( curl -L ${MINBIAS_URL} )
 
 # Initialize associative arrays (maps) for each type of background
-declare -A EGAS_MAP
-declare -A HGAS_MAP
-declare -A SYNRAD_MAP
+declare -A EGAS_FILE EGAS_FREQ EGAS_SKIP HGAS_FILE HGAS_FREQ HGAS_SKIP SYNRAD_FILE SYNRAD_FREQ SYNRAD_SKIP
 
 # Function to process each line into a map
 process_lines() {
     local data="$1"
-    local -n map_ref="$2"
+    local -n map_file="$2"
+    local -n map_freq="$3$
+    local -n map_skip=$4$
     local index=0
 
-    while IFS=',' read -r key value; do
+    while IFS=',' read -r config file freq skip; do
         # Adding the line to the map with a simple index as the key
-        map_ref[$key]="$value"
+        map_file[$config]="$file"
+        map_freq[$config]="$freq"
+        map_skip[$config]="$skip"
     done <<< "$data"
 }
 
 # Process the downloaded data and populate the maps
-process_lines "$EGAS_TABLE" EGAS_MAP
-process_lines "$HGAS_TABLE" HGAS_MAP
-process_lines "$SYNRAD_TABLE" MINBIAS_MAP
+process_lines "$EGAS_TABLE" EGAS_FILE EGAS_FREQ EGAS_SKIP
+process_lines "$HGAS_TABLE" HGAS_FILE HGAS_FREQ HGAS_SKIP
+process_lines "$SYNRAD_TABLE" SYNRAD_FILE SYNRAD_FREQ SYNRAD_SKIP
 
-export BG1_FREQ=${EGAS_MAP[${EBEAM}x${PBEAM}_${EVAC}]}
-export BG2_FREQ=${HGAS_MAP[${EBEAM}x${PBEAM}_${HVAC}]}
-export BG3_FREQ=${SYNRAD_MAP[${EBEAM}x${PBEAM}]}
+export BG1_FILE=${EGAS_FILE[${EBEAM}x${PBEAM}_${EVAC}]}
+export BG1_FREQ=${EGAS_FREQ[${EBEAM}x${PBEAM}_${EVAC}]}
+export BG1_SKIP=${EGAS_SKIP[${EBEAM}x${PBEAM}_${EVAC}]}
 
-echo "Electron Beam Gas Frequency:" $BG1_FREQ
-echo "Hadron Beam Gas Frequency:" $BG2_FREQ
-echo "Synchroton Backgrounds Frequency:" $BG3_FREQ
+export BG2_FILE=${HGAS_FILE[${EBEAM}x${PBEAM}_${HVAC}]}
+export BG2_FREQ=${HGAS_FREQ[${EBEAM}x${PBEAM}_${HVAC}]}
+export BG2_SKIP=${HGAS_SKIP[${EBEAM}x${PBEAM}_${HVAC}]}
+
+export BG3_FILE=${SYNRAD_FILE[${EBEAM}]}
+export BG3_FREQ=${SYNRAD_FREQ[${EBEAM}]}
+export BG3_SKIP=${SYNRAD_SKIP[${EBEAM}]}
