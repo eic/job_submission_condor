@@ -16,6 +16,17 @@ SYNRAD_TABLE=$( curl -L ${SYNRAD_URL} )
 # Initialize associative arrays (maps) for each type of background
 declare -A EGAS_FILE EGAS_FREQ EGAS_SKIP HGAS_FILE HGAS_FREQ HGAS_SKIP SYNRAD_FILE SYNRAD_FREQ SYNRAD_SKIP
 
+# Function to trim units and white space from variables
+trim() {
+  local input="$1"
+  # Remove 'kHz' and surrounding whitespace
+  input="${input//[[:space:]]kHz[[:space:]]*/}"
+  # Trim leading and trailing whitespace
+  input="${input##*( )}"
+  input="${input%%*( )}"
+  echo "$input"
+}
+
 # Function to process each line into a map
 process_lines() {
     local data="$1"
@@ -26,9 +37,9 @@ process_lines() {
 
     while IFS=',' read -r config file freq skip; do
         # Adding the line to the map with a simple index as the key
-        map_file[$config]="$file"
-        map_freq[$config]="$freq"
-        map_skip[$config]="$skip"
+        map_file[$config]="$(trim $file)"
+        map_freq[$config]="$(trim $freq)"
+        map_skip[$config]="$(trim $skip)"
     done <<< "$data"
 }
 
