@@ -22,7 +22,7 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 #periodic_release =  (NumJobStarts < 2) && (HoldReasonCode == 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
 
 +ProjectName="ePIC"
-+SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:%JUG_XL_TAG%"
++SingularityImage="/cvmfs/singularity.opensciencegrid.org/eic/eic_xl:%JUG_XL_TAG%"
 
 Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && TARGET.Microarch >= "x86_64-v2"
 
