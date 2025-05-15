@@ -61,6 +61,7 @@ sed "
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
   s|%PBEAM%|${PBEAM}|g;
+  s|%VAC%|${VAC}|g;
   s|%SIG_FREQ%|${SIG_FREQ}|g;
   s|%BG1_FILE%|${BG1_FILE}|g;
   s|%BG1_FREQ%|${BG1_FREQ}|g;
