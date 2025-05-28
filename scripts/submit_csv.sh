@@ -41,7 +41,9 @@ EXECUTABLE="$(dirname $0)/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # Set background environment variables
-source $(dirname $0)/set_bg_mix_var.sh
+if [ -n "${VAC:-}" ]; then
+  source $(dirname $0)/set_bg_mix_var.sh
+fi
 
 # construct environment file
 ENVIRONMENT=environment-$(basename ${CSV_FILE} .csv).sh
