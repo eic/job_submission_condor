@@ -46,14 +46,20 @@ process_lines "$EGAS_TABLE" EGAS_FILE EGAS_FREQ EGAS_SKIP
 process_lines "$HGAS_TABLE" HGAS_FILE HGAS_FREQ HGAS_SKIP
 process_lines "$SYNRAD_TABLE" SYNRAD_FILE SYNRAD_FREQ SYNRAD_SKIP
 
+# Always set BG1 and BG3
 export BG1_FILE=${EGAS_FILE[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
 export BG1_FREQ=${EGAS_FREQ[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
 export BG1_SKIP=${EGAS_SKIP[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
 
-export BG2_FILE=${HGAS_FILE[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
-export BG2_FREQ=${HGAS_FREQ[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
-export BG2_SKIP=${HGAS_SKIP[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
-
 export BG3_FILE=${SYNRAD_FILE[${EBEAM}GeV]}
 export BG3_FREQ=${SYNRAD_FREQ[${EBEAM}GeV]}
 export BG3_SKIP=${SYNRAD_SKIP[${EBEAM}GeV]}
+
+# Only set BG2 if BG_ONLY is not true
+if [ -z "${BG_ONLY:-}" ]; then
+  export BG2_FILE=${HGAS_FILE[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
+  export BG2_FREQ=${HGAS_FREQ[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
+  export BG2_SKIP=${HGAS_SKIP[${EBEAM}GeVx${PBEAM}GeV_${VAC}Ahr]}
+else
+  echo "Running in background only mode. Make sure to use the proton beam gas as the signal"
+fi
