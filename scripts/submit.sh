@@ -40,10 +40,6 @@ ARGUMENTS="${TYPE} ${INPUT} ${EVENTS_PER_TASK} \$(Process)"
 # construct environment file
 ENVIRONMENT=environment.sh
 sed "
-  s|%S3_ACCESS_KEY%|${S3_ACCESS_KEY:-}|g;
-  s|%S3_SECRET_KEY%|${S3_SECRET_KEY:-}|g;
-  s|%S3RW_ACCESS_KEY%|${S3RW_ACCESS_KEY:-}|g;
-  s|%S3RW_SECRET_KEY%|${S3RW_SECRET_KEY:-}|g;
   s|%PBEAM%|${PBEAM}|g;
 " templates/${TEMPLATE}.sh.in > ${ENVIRONMENT}
 
