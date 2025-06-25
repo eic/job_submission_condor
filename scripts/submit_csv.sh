@@ -13,6 +13,7 @@ fi
 # Project configuration
 BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/${DETECTOR_VERSION:-main}/raw/results/datasets/timings/"
 BASEJOB="?job=collect"
+BKGURL="https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/main/config_data"
 
 # Parse arguments
 # - condor template
@@ -42,7 +43,7 @@ ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # Set background environment variables
 if [ -n "${BG_FILE:-}" ]; then
-  curl -L -O https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/main/config_data/${BG_FILE}
+  curl -L -O ${BKGURL}/${BG_FILE}
 fi
 
 # construct environment file
