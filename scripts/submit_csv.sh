@@ -42,8 +42,8 @@ EXECUTABLE="$(dirname $0)/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # Set background environment variables
-if [ -n "${BG_FILE:-}" ]; then
-  curl -L -O ${BKGURL}/${BG_FILE}
+if [ -n "${BG_FILES:-}" ]; then
+  curl -L -O ${BKGURL}/${BG_FILES}
 fi
 
 # construct environment file
@@ -64,7 +64,6 @@ sed "
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
   s|%PBEAM%|${PBEAM}|g;
-  s|%VAC%|${VAC:-}|g;
   s|%SIGNAL_FREQ%|${SIGNAL_FREQ:-}|g;
   s|%SIGNAL_STATUS%|${SIGNAL_STATUS:-}|g;
   s|%BG_FILES%|${BG_FILES:-}|g;
