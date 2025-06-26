@@ -13,6 +13,7 @@ fi
 # Project configuration
 BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/${DETECTOR_VERSION:-main}/raw/results/datasets/timings/"
 BASEJOB="?job=collect"
+BKGURL="https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/main/config_data"
 
 # Parse arguments
 # - condor template
@@ -41,8 +42,8 @@ EXECUTABLE="$(dirname $0)/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # Set background environment variables
-if [ -n "${VAC:-}" ]; then
-  source $(dirname $0)/set_bg_mix_var.sh
+if [ -n "${BG_FILES:-}" ]; then
+  curl -L -O ${BKGURL}/${BG_FILES}
 fi
 
 # construct environment file
@@ -63,17 +64,9 @@ sed "
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%EBEAM%|${EBEAM}|g;
   s|%PBEAM%|${PBEAM}|g;
-  s|%VAC%|${VAC:-}|g;
-  s|%SIG_FREQ%|${SIG_FREQ:-}|g;
-  s|%BG1_FILE%|${BG1_FILE:-}|g;
-  s|%BG1_FREQ%|${BG1_FREQ:-}|g;
-  s|%BG1_SKIP%|${BG1_SKIP:-}|g;
-  s|%BG2_FILE%|${BG2_FILE:-}|g;
-  s|%BG2_FREQ%|${BG2_FREQ:-}|g;
-  s|%BG2_SKIP%|${BG2_SKIP:-}|g;
-  s|%BG3_FILE%|${BG3_FILE:-}|g;
-  s|%BG3_FREQ%|${BG3_FREQ:-}|g;
-  s|%BG3_SKIP%|${BG3_SKIP:-}|g;
+  s|%SIGNAL_FREQ%|${SIGNAL_FREQ:-}|g;
+  s|%SIGNAL_STATUS%|${SIGNAL_STATUS:-}|g;
+  s|%BG_FILES%|${BG_FILES:-}|g;
 " templates/${TEMPLATE}.sh.in > ${ENVIRONMENT}
 
 # construct requirements
@@ -81,6 +74,7 @@ REQUIREMENTS=""
 
 # construct input files
 INPUT_FILES=${ENVIRONMENT},${X509_USER_PROXY}
+INPUT_FILES="${INPUT_FILES}${BG_FILES:+,${BG_FILES}}"
 
 # construct submission file
 SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
