@@ -89,12 +89,15 @@ sed "
   s|%CSV_FILE%|${CSV_FILE}|g;
 " templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
-# submit job
-condor_submit -verbose -file ${SUBMIT_FILE}
-
-# create log dir
-if [ $? -eq 0 ] ; then
-  for i in `condor_q --batch | grep ^${USER} | tail -n1 | awk '{print($NF)}' | cut -d. -f1` ; do
-    mkdir -p LOG/CONDOR/osg_$i/
-  done
+if [ -n "${SUBMIT_CONDOR}" ]; then
+  # submit job
+  condor_submit -verbose -file ${SUBMIT_FILE}
+  # create log dir
+  if [ $? -eq 0 ] ; then
+    for i in `condor_q --batch | grep ^${USER} | tail -n1 | awk '{print($NF)}' | cut -d. -f1` ; do
+      mkdir -p LOG/CONDOR/osg_$i/
+    done
+  fi
+else
+  prun --exec "python3 submit_panda.py %RNDM ${CSV_FILE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
 fi
