@@ -89,7 +89,7 @@ sed "
   s|%CSV_FILE%|${CSV_FILE}|g;
 " templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
-if [ -n "${SUBMIT_CONDOR}" ]; then
+if [ -n "${SUBMIT_CONDOR:-}" ]; then
   # submit job
   condor_submit -verbose -file ${SUBMIT_FILE}
   # create log dir
