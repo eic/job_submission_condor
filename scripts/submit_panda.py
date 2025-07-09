@@ -4,7 +4,7 @@ import csv
 
 # read params
 n = int(sys.argv[1])
-with open('sys.argv[2]') as f:
+with open(sys.argv[2]) as f:
     reader = csv.reader(f)
     params = list(reader)[n]  # params is now a list of fields
 
