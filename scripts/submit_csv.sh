@@ -40,7 +40,7 @@ else
 fi
 
 # create command line
-EXECUTABLE="$(SCRIPTS_DIR)/run.sh"
+EXECUTABLE="${SCRIPTS_DIR}/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # Set background environment variables
