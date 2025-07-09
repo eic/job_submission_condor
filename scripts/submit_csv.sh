@@ -101,5 +101,5 @@ if [ -n "${SUBMIT_CONDOR:-}" ]; then
 else
   DATASET_IDENTIFIER=$(basename ${CSV_FILE} .csv)
   DATASET_IDENTIFIER=${DATASET_IDENTIFIER//:/-}
-  prun --exec "python3 submit_panda.py %RNDM ${CSV_FILE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
+  prun --exec "python3 $(dirname $0)/submit_panda.py %RNDM ${CSV_FILE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
 fi
