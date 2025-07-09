@@ -29,16 +29,18 @@ shift
 TARGET=${1:-2}
 shift
 
+
+SCRIPTS_DIR=$(dirname $0)
 # process csv file into jobs
 if [ -n "${CSV_FILE:-}" ]; then
   # allow to set custom csv file for job instead of fetching from web archive
   CSV_FILE=$(realpath -e ${CSV_FILE})
 else
-  CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
+  CSV_FILE=$(${SCRIPTS_DIR}/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
 
 # create command line
-EXECUTABLE="$(dirname $0)/run.sh"
+EXECUTABLE="$(SCRIPTS_DIR)/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
 
 # Set background environment variables
@@ -101,5 +103,5 @@ if [ -n "${SUBMIT_CONDOR:-}" ]; then
 else
   DATASET_IDENTIFIER=$(basename ${CSV_FILE} .csv)
   DATASET_IDENTIFIER=${DATASET_IDENTIFIER//:/-}
-  prun --exec "python3 $(dirname $0)/submit_panda.py %RNDM ${CSV_FILE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
+  prun --exec "python3 ${SCRIPTS_DIR}/submit_panda.py %RNDM ${CSV_FILE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
 fi
