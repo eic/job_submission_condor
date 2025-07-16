@@ -38,7 +38,7 @@ if [ -n "${CSV_FILE:-}" ]; then
 else
   CSV_FILE=$(${SCRIPTS_DIR}/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
-CSV_BASE=$(basename ${CSV_FILE} .csv)
+export CSV_BASE=$(basename ${CSV_FILE} .csv)
 
 # create command line
 EXECUTABLE="${SCRIPTS_DIR}/run.sh"
@@ -89,7 +89,7 @@ sed "
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%INPUT_FILES%|${INPUT_FILES}|g;
   s|%REQUIREMENTS%|${REQUIREMENTS}|g;
-  s|%CSV_FILE%|${CSV_FILE}|g;
+  s|%CSV_BASE%|${CSV_BASE}|g;
 " templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
 if [ -n "${SUBMIT_CONDOR:-}" ]; then
