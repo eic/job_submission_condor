@@ -9,7 +9,7 @@ with open(sys.argv[2]) as f:
     params = list(reader)[n]  # params is now a list of fields
 
 # construct exec string with multiple fields
-exec_str = f"/opt/campaigns/hepmc3/scripts/run.sh {params[0]} {params[1]} {params[2]} {params[3]}"
+exec_str = f"/opt/campaigns/hepmc3/scripts/run.sh EVGEN/{params[0]} {params[1]} {params[2]} {params[3]}"
 
 # execute
 ps = subprocess.Popen(exec_str, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1)
