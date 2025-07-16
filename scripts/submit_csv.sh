@@ -39,6 +39,7 @@ if [ -n "${CSV_FILE:-}" ]; then
 else
   CSV_FILE=$(${SCRIPTS_DIR}/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
+CSV_BASE=$(basename ${CSV_FILE} .csv)
 
 # create command line
 EXECUTABLE="${SCRIPTS_DIR}/run.sh"
@@ -50,7 +51,7 @@ if [ -n "${BG_FILES:-}" ]; then
 fi
 
 # construct environment file
-ENVIRONMENT=environment-$(basename ${CSV_FILE} .csv).sh
+ENVIRONMENT=environment-${CSV_BASE}.sh
 
 # extract certificate name
 X509_USER_PROXY_BASE=$(basename ${X509_USER_PROXY:-})
@@ -80,7 +81,7 @@ INPUT_FILES=${ENVIRONMENT},${X509_USER_PROXY}
 INPUT_FILES="${INPUT_FILES}${BG_FILES:+,${BG_FILES}}"
 
 # construct submission file
-SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
+SUBMIT_FILE=${CSV_BASE}.submit
 sed "
   s|%EXECUTABLE%|${EXECUTABLE}|g;
   s|%ARGUMENTS%|${ARGUMENTS}|g;
@@ -104,5 +105,5 @@ if [ -n "${SUBMIT_CONDOR:-}" ]; then
 else
   DATASET_IDENTIFIER=$(basename ${CSV_FILE} .csv)
   DATASET_IDENTIFIER=${DATASET_IDENTIFIER//:/-}
-  prun --exec "python3 ${SCRIPTS_DIR}/submit_panda.py %RNDM=0 ${CSV_FILE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
+  prun --exec "python3 ${SCRIPTS_DIR}/submit_panda.py %RNDM=0 ${CSV_BASE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
 fi
