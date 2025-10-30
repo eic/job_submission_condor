@@ -26,7 +26,7 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 
 Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && TARGET.Microarch >= "x86_64-v2"
 
-+UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin,GATech,OSG_US_FSU_HNPGRID,Alabama-CHPC"
++UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin,GATech,OSG_US_FSU_HNPGRID,Alabama-CHPC,Clemson-Palmetto"
 # AMNH nodes block connections over web
 # BE0CAT-SLATE, FNAL_GPGrid, FNAL, GATech cannot read input files
 # OSG_US_FSU_HNPGRID cannot connect to logging RSE
@@ -34,8 +34,8 @@ Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_
 # Wisconsin Date errors
 
 request_cpus   = 1
-request_memory = 3.0 GB
-request_disk   = 5 GB
+request_memory = 3.8 GB
+request_disk   = 2.2 GB
 
 max_idle = 500
 
