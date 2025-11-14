@@ -35,7 +35,7 @@ if [ -n "${CSV_FILE:-}" ]; then
   # allow to set custom csv file for job instead of fetching from web archive
   CSV_FILE=$(realpath -e ${CSV_FILE})
 else
-  CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET} )
+  CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
 
 # create command line
