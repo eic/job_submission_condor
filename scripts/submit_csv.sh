@@ -11,7 +11,7 @@ if [ $# -lt 2 ] ; then
 fi
 
 # Project configuration
-RESULTS=results/${CONTAINER_NAME:-eic_ci}/${JUG_XL_TAG:-nightly}/${DETECTOR_CONFIG:-epic_craterlake}/${DETECTOR_VERSION:-main}
+RESULTS=results/${JUG_XL_TAG:-nightly}/${DETECTOR_CONFIG:-epic_craterlake}/${DETECTOR_VERSION:-main}
 export BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/${DATASET_TAG:-main}/raw/${RESULTS}/datasets/timings/"
 export BASEJOB="?job=collect"
 BKGURL="https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/${DATASET_TAG:-main}/config_data"
