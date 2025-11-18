@@ -11,9 +11,10 @@ if [ $# -lt 2 ] ; then
 fi
 
 # Project configuration
-BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/${DETECTOR_VERSION:-main}/raw/results/datasets/timings/"
-BASEJOB="?job=collect"
-BKGURL="https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/main/config_data"
+RESULTS=results/${JUG_XL_TAG:-nightly}/${DETECTOR_CONFIG:-epic_craterlake}/${DETECTOR_VERSION:-main}
+export BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/${DATASET_TAG:-main}/raw/${RESULTS}/datasets/timings/"
+export BASEJOB="?job=collect"
+BKGURL="https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/${DATASET_TAG:-main}/config_data"
 
 # Parse arguments
 # - condor template

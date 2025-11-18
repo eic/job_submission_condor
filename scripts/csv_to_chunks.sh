@@ -10,10 +10,6 @@ if [ $# -lt 2 ] ; then
   exit
 fi
 
-# Project configuration
-BASEURL="https://eicweb.phy.anl.gov/api/v4/projects/491/jobs/artifacts/main/raw/results/datasets/timings/"
-BASEJOB="?job=collect"
-
 # Parse arguments
 # - input file
 FILE=${1}
