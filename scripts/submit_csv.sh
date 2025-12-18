@@ -38,6 +38,11 @@ else
   CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
 
+# number of jobs (zero-based)
+NUM_JOBS=$(wc -l ${CSV_FILE} | cut -f1 -d\ )
+let NUM_JOBS=${NUM_JOBS}-1
+echo ${NUM_JOBS}
+
 # create command line
 EXECUTABLE="$(dirname $0)/run.sh"
 ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
@@ -91,11 +96,28 @@ sed "
 " templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
 # submit job
-condor_submit -verbose -file ${SUBMIT_FILE}
+if [[ ${TEMPLATE} =~ slurm ]] ; then
 
-# create log dir
-if [ $? -eq 0 ] ; then
-  for i in `condor_q --batch | grep ^${USER} | tail -n1 | awk '{print($NF)}' | cut -d. -f1` ; do
-    mkdir -p LOG/CONDOR/osg_$i/
+  # slurm
+  max_array_size=2000
+  while [ ${NUM_JOBS} -ge 0 ] ; do
+    let taskN=${NUM_JOBS}
+    let task0=${NUM_JOBS}-${max_array_size}+1
+    if [ ${task0} -lt 0 ] ; then task0=0 ; fi
+    sbatch --array=${task0}-${taskN} ${SUBMIT_FILE}
+    let NUM_JOBS=${NUM_JOBS}-${max_array_size}
   done
+
+else
+
+  # condor
+  condor_submit -verbose -file ${SUBMIT_FILE}
+
+  # create log dir
+  if [ $? -eq 0 ] ; then
+    for i in `condor_q --batch | grep ^${USER} | tail -n1 | awk '{print($NF)}' | cut -d. -f1` ; do
+      mkdir -p LOG/CONDOR/osg_$i/
+    done
+  fi
+
 fi
