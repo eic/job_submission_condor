@@ -39,7 +39,7 @@ if [ -n "${CSV_FILE:-}" ]; then
 else
   CSV_FILE=$(${SCRIPTS_DIR}/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
-export CSV_BASE=$(basename ${CSV_FILE} .csv)
+CSV_BASE=$(basename ${CSV_FILE} .csv)
 
 # create command line
 EXECUTABLE="${SCRIPTS_DIR}/run.sh"
@@ -90,7 +90,7 @@ sed "
   s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
   s|%INPUT_FILES%|${INPUT_FILES}|g;
   s|%REQUIREMENTS%|${REQUIREMENTS}|g;
-  s|%CSV_BASE%|${CSV_BASE}|g;
+  s|%CSV_FILE%|${CSV_FILE}|g;
 " templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
 
 if [ -n "${SUBMIT_CONDOR:-}" ]; then
@@ -103,7 +103,21 @@ if [ -n "${SUBMIT_CONDOR:-}" ]; then
     done
   fi
 else
-  DATASET_IDENTIFIER=$(basename ${CSV_FILE} .csv)
-  DATASET_IDENTIFIER=${DATASET_IDENTIFIER//:/-}
-  prun --exec "python3 ${SCRIPTS_DIR}/submit_panda.py %RNDM=0 ${CSV_BASE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site BNL_OSG_PanDA_1 --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
+  # PanDA mode - organize into directory
+  SUBMISSION_DIR="${CSV_BASE}"
+  mkdir -p ${SUBMISSION_DIR}
+
+  # Move generated files into submission directory
+  mv ${ENVIRONMENT} ${SUBMISSION_DIR}/
+  mv ${SUBMIT_FILE} ${SUBMISSION_DIR}/
+  mv ${CSV_FILE} ${SUBMISSION_DIR}/
+
+  # Copy scripts and external files
+  cp ${SCRIPTS_DIR}/submit_panda.py ${SUBMISSION_DIR}/
+  [ -n "${X509_USER_PROXY:-}" ] && cp ${X509_USER_PROXY} ${SUBMISSION_DIR}/
+  [ -n "${BG_FILES:-}" ] && cp ${BG_FILES} ${SUBMISSION_DIR}/
+
+  # Use CSV_BASE and replace colons with dashes for dataset identifier
+  DATASET_IDENTIFIER=${CSV_BASE//:/-}
+  prun --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site ${PANDA_SITE:-BNL_OSG_PanDA_1} --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --workDir ${SUBMISSION_DIR} --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
 fi
