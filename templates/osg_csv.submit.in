@@ -1,9 +1,8 @@
-batch_name = %DETECTOR_VERSION%/%DETECTOR_CONFIG%/%CSV_BASE%
+batch_name = %DETECTOR_VERSION%/%DETECTOR_CONFIG%/%CSV_FILE%
 
 universe   = vanilla
 executable = %EXECUTABLE%
 arguments  = %ARGUMENTS%
-getenv = CSV_BASE
 
 # Log files
 error  = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).err
@@ -40,4 +39,4 @@ request_disk   = 2.2 GB
 
 max_idle = 500
 
-queue file,ext,nevents,ichunk from %CSV_BASE%.csv
+queue file,ext,nevents,ichunk from %CSV_FILE%
