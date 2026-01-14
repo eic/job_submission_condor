@@ -108,6 +108,9 @@ else
   SUBMISSION_DIR="${CSV_BASE}"
   mkdir -p ${SUBMISSION_DIR}
 
+  # Count jobs before moving the CSV file
+  NJOBS=$(grep . ${CSV_FILE} | wc -l)
+
   # Move generated files into submission directory
   mv ${ENVIRONMENT} ${SUBMISSION_DIR}/
   mv ${SUBMIT_FILE} ${SUBMISSION_DIR}/
@@ -120,5 +123,5 @@ else
 
   # Use CSV_BASE and replace colons with dashes for dataset identifier
   DATASET_IDENTIFIER=${CSV_BASE//:/-}
-  prun --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" --nJobs `grep . ${CSV_FILE} | wc -l` --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site ${PANDA_SITE:-BNL_OSG_PanDA_1} --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --workDir ${SUBMISSION_DIR} --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
+  prun --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" --nJobs ${NJOBS} --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site ${PANDA_SITE:-BNL_OSG_PanDA_1} --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --workDir ${SUBMISSION_DIR} --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}
 fi
