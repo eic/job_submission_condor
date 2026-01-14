@@ -1,20 +1,24 @@
 import subprocess
 import sys
 import csv
+from itertools import islice
 
 # read params
 n = int(sys.argv[1])
+csv_base = sys.argv[2]
 
-with open(sys.argv[2].csv) as f:
+# Memory-efficient: read only the nth row without loading entire file
+with open(f"{csv_base}.csv") as f:
     reader = csv.reader(f)
-    params = list(reader)[n]  # params is now a list of fields
+    # Skip to nth row without loading all rows into memory
+    params = next(islice(reader, n, n+1), None)
+    if params is None:
+        print(f"Error: Row {n} not found in CSV file", file=sys.stderr)
+        sys.exit(1)
 
-# construct exec string with multiple fields
-exec_str = f"CSV_BASE=sys.argv[2] /opt/campaigns/hepmc3/scripts/run.sh EVGEN/{params[0]} {params[1]} {params[2]} {params[3]}"
-
-# execute
-ps = subprocess.Popen(exec_str, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1)
-for l in ps.stdout:
-    print(l.strip())
-c = ps.wait()
-sys.exit(c)
+# execute directly without shell
+result = subprocess.run(
+    ["/opt/campaigns/hepmc3/scripts/run.sh", f"EVGEN/{params[0]}", params[1], params[2], params[3]],
+    text=True
+)
+sys.exit(result.returncode)
