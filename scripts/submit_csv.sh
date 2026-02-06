@@ -124,7 +124,20 @@ else
   # Use CSV_BASE and replace colons with dashes for dataset identifier
   DATASET_IDENTIFIER=${CSV_BASE//:/-}
 
-  # Change into submission directory and run prun
+  # Change into submission directory and run Python API submission
   cd ${SUBMISSION_DIR}
-  prun --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" --nJobs ${NJOBS} --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} --vo wlcg --site ${PANDA_SITE:-BNL_OSG_PanDA_1} --prodSourceLabel test --workingGroup ${PANDA_AUTH_VO} --noBuild --workDir . --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG} --nCore ${PANDA_NCORE:-1} --memory ${PANDA_MEMORY:-4096}
+  python3 ${SCRIPTS_DIR}/submit_panda_api.py \
+    --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" \
+    --nJobs ${NJOBS} \
+    --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} \
+    --vo wlcg \
+    --site ${PANDA_SITE:-BNL_OSG_PanDA_1} \
+    --prodSourceLabel test \
+    --workingGroup ${PANDA_AUTH_VO} \
+    --noBuild \
+    --workDir . \
+    --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG} \
+    --nCore ${PANDA_NCORE:-1} \
+    --memory ${PANDA_MEMORY:-4096} \
+    --disk ${PANDA_DISK:-4096}
 fi
