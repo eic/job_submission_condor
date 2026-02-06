@@ -118,6 +118,7 @@ else
 
   # Copy scripts and external files
   cp ${SCRIPTS_DIR}/submit_panda.py ${SUBMISSION_DIR}/
+  cp ${SCRIPTS_DIR}/submit_panda_api.py ${SUBMISSION_DIR}/
   [ -n "${X509_USER_PROXY:-}" ] && cp ${X509_USER_PROXY} ${SUBMISSION_DIR}/
   [ -n "${BG_FILES:-}" ] && cp ${BG_FILES} ${SUBMISSION_DIR}/
 
@@ -126,7 +127,7 @@ else
 
   # Change into submission directory and run Python API submission
   cd ${SUBMISSION_DIR}
-  python3 ${SCRIPTS_DIR}/submit_panda_api.py \
+  python3 submit_panda_api.py \
     --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" \
     --nJobs ${NJOBS} \
     --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} \
