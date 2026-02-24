@@ -122,8 +122,11 @@ else
   [ -n "${X509_USER_PROXY:-}" ] && cp ${X509_USER_PROXY} ${SUBMISSION_DIR}/
   [ -n "${BG_FILES:-}" ] && cp ${BG_FILES} ${SUBMISSION_DIR}/
 
-  # Use CSV_BASE and replace colons with dashes for dataset identifier
-  DATASET_IDENTIFIER=${CSV_BASE//:/-}
+  # Extract first file path from CSV and convert to dataset identifier
+  FIRST_FILE=$(head -n1 ${CSV_FILE} | cut -d',' -f1)
+  # Remove filename and keep directory path, then replace slashes with dots
+  DATASET_PATH=$(dirname ${FIRST_FILE})
+  DATASET_IDENTIFIER=${DATASET_PATH//\//.}
 
   # Change into submission directory and run Python API submission
   cd ${SUBMISSION_DIR}
