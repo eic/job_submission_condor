@@ -42,7 +42,7 @@ def main():
         'architecture': '',
         'transUses': '',
         'transHome': None,
-        'transPath': '',
+        'transPath': 'https://pandaserver-doma.cern.ch/trf/user/runGen-00-00-02',
         'coreCount': args.nCore,
         'ramCount': args.memory,
         'nEvents': args.nJobs,
