@@ -45,10 +45,8 @@ def main():
         'transPath': 'python3',
         'coreCount': args.nCore,
         'ramCount': args.memory,
-        'nJobs': args.nJobs,
-        'nEventsPerJob': 1,
-        'nEventsPerRange': 1,
         'nFilesPerJob': 1,
+        'nJobs': args.nJobs,
         'jobParameters': [
             {
                 'type': 'constant',
