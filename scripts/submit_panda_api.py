@@ -42,7 +42,7 @@ def main():
         'architecture': '',
         'transUses': '',
         'transHome': None,
-        'transPath': 'python3',
+        'transPath': '',
         'coreCount': args.nCore,
         'ramCount': args.memory,
         'nEvents': args.nJobs,
