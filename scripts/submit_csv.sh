@@ -130,18 +130,20 @@ else
 
   # Change into submission directory and run Python API submission
   cd ${SUBMISSION_DIR}
-  python3 submit_panda_api.py \
-    --exec "python3 submit_panda.py %RNDM=0 ${CSV_BASE}" \
+
+  # Build submission command with required parameters
+  SUBMIT_CMD="python3 submit_panda_api.py \
+    --exec \"python3 submit_panda.py %RNDM=0 ${CSV_BASE}\" \
     --nJobs ${NJOBS} \
-    --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER} \
-    --vo wlcg \
-    --site ${PANDA_SITE:-BNL_OSG_PanDA_1} \
-    --prodSourceLabel test \
-    --workingGroup ${PANDA_AUTH_VO} \
-    --noBuild \
-    --workDir . \
-    --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG} \
-    --nCore ${PANDA_NCORE:-1} \
-    --memory ${PANDA_MEMORY:-4096} \
-    --disk ${PANDA_DISK:-4096}
+    --outDS user.${PANDA_USER}.${DATASET_IDENTIFIER}"
+
+  # Add optional overrides if environment variables are set
+  [ -n "${PANDA_AUTH_VO:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --workingGroup ${PANDA_AUTH_VO}"
+  [ -n "${PANDA_SITE:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --site ${PANDA_SITE}"
+  [ -n "${PANDA_NCORE:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --nCore ${PANDA_NCORE}"
+  [ -n "${PANDA_MEMORY:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --memory ${PANDA_MEMORY}"
+  [ -n "${PANDA_DISK:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --disk ${PANDA_DISK}"
+  [ -n "${JUG_XL_TAG:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}"
+
+  eval $SUBMIT_CMD
 fi
