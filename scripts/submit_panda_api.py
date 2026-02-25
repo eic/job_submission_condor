@@ -42,7 +42,7 @@ def main():
         'architecture': '',
         'transUses': '',
         'transHome': None,
-        'transPath': 'https://pandaserver-doma.cern.ch/trf/user/runGen-00-00-02',
+        'transPath': '',
         'coreCount': args.nCore,
         'ramCount': args.memory,
         'nEvents': args.nJobs,
@@ -55,6 +55,20 @@ def main():
                 'offset': 0
             }
         ],
+        'multiStepExec': {
+            'preprocess': {
+                'command': '${TRF}',
+                'args': '--preprocess ${TRF_ARGS}'
+            },
+            'postprocess': {
+                'command': '${TRF}',
+                'args': '--postprocess ${TRF_ARGS}'
+            },
+            'containerOptions': {
+                'containerExec': 'echo "=== cat exec script ==="; cat __run_main_exec.sh; echo; echo "=== exec script ==="; /bin/sh __run_main_exec.sh',
+                'containerImage': args.containerImage
+            }
+        },
         'log': {
             'type': 'template',
             'param_type': 'log',
