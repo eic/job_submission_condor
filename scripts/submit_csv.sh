@@ -110,6 +110,12 @@ else
   # Count jobs before moving the CSV file
   NJOBS=$(grep . ${CSV_FILE} | wc -l)
 
+  # Extract first file path from CSV and convert to dataset identifier
+  FIRST_FILE=$(head -n1 ${CSV_FILE} | cut -d',' -f1)
+  # Remove filename and keep directory path, then replace slashes with dots
+  DATASET_PATH=$(dirname ${FIRST_FILE})
+  DATASET_IDENTIFIER=${DATASET_PATH//\//.}
+
   # Move generated files into submission directory
   mv ${ENVIRONMENT} ${SUBMISSION_DIR}/
   mv ${SUBMIT_FILE} ${SUBMISSION_DIR}/
@@ -120,12 +126,6 @@ else
   cp ${SCRIPTS_DIR}/submit_panda_api.py ${SUBMISSION_DIR}/
   [ -n "${X509_USER_PROXY:-}" ] && cp ${X509_USER_PROXY} ${SUBMISSION_DIR}/
   [ -n "${BG_FILES:-}" ] && cp ${BG_FILES} ${SUBMISSION_DIR}/
-
-  # Extract first file path from CSV and convert to dataset identifier
-  FIRST_FILE=$(head -n1 ${CSV_FILE} | cut -d',' -f1)
-  # Remove filename and keep directory path, then replace slashes with dots
-  DATASET_PATH=$(dirname ${FIRST_FILE})
-  DATASET_IDENTIFIER=${DATASET_PATH//\//.}
 
   # Change into submission directory and run Python API submission
   cd ${SUBMISSION_DIR}
