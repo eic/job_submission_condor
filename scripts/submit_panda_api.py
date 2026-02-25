@@ -18,7 +18,7 @@ def main():
     parser.add_argument("--vo", default="wlcg", help="Virtual organization")
     parser.add_argument("--site", default="BNL_OSG_PanDA_1", help="PanDA site")
     parser.add_argument("--prodSourceLabel", default="test", help="Production source label")
-    parser.add_argument("--noBuild", action="store_true", default=True, help="Skip build step")
+    parser.add_argument("--noBuild", action="store_true", default=False, help="Skip build step")
     parser.add_argument("--workDir", default=".", help="Working directory")
     parser.add_argument("--containerImage", default="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:nightly", help="Container image path")
     parser.add_argument("--nCore", type=int, default=1, help="Number of CPU cores")
@@ -45,8 +45,8 @@ def main():
         'transPath': 'python3',
         'coreCount': args.nCore,
         'ramCount': args.memory,
-        'nFilesPerJob': 1,
-        'nJobs': args.nJobs,
+        'nEvents': args.nJobs,
+        'nEventsPerJob': 1,
         'jobParameters': [
             {
                 'type': 'constant',
