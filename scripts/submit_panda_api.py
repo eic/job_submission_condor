@@ -14,16 +14,16 @@ def main():
     parser.add_argument("--exec", dest="exec_cmd", required=True, help="Command to execute")
     parser.add_argument("--nJobs", type=int, required=True, help="Number of jobs")
     parser.add_argument("--outDS", required=True, help="Output dataset name")
-    parser.add_argument("--vo", required=True, help="Virtual organization")
-    parser.add_argument("--site", required=True, help="PanDA site")
-    parser.add_argument("--prodSourceLabel", required=True, help="Production source label")
-    parser.add_argument("--workingGroup", required=True, help="Working group")
-    parser.add_argument("--noBuild", action="store_true", help="Skip build step")
+    parser.add_argument("--workingGroup", default="EIC", help="Working group")
+    parser.add_argument("--vo", default="wlcg", help="Virtual organization")
+    parser.add_argument("--site", default="BNL_OSG_PanDA_1", help="PanDA site")
+    parser.add_argument("--prodSourceLabel", default="test", help="Production source label")
+    parser.add_argument("--noBuild", action="store_true", default=True, help="Skip build step")
     parser.add_argument("--workDir", default=".", help="Working directory")
-    parser.add_argument("--containerImage", default=None, help="Container image path")
+    parser.add_argument("--containerImage", default="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:nightly", help="Container image path")
     parser.add_argument("--nCore", type=int, default=1, help="Number of CPU cores")
     parser.add_argument("--memory", type=int, default=4096, help="Memory in MB")
-    parser.add_argument("--disk", type=int, default=None, help="Work disk count in MB")
+    parser.add_argument("--disk", type=int, default=4096, help="Work disk count in MB")
     parser.add_argument("--taskType", default="prod", help="Task type (test, prod, or anal)")
 
     args = parser.parse_args()
@@ -38,6 +38,7 @@ def main():
         'taskType': args.taskType,
         'taskName': args.outDS,
         'userName': None,  # Will be filled by client
+        'noInput': True,  # Task does not require input datasets
         'architecture': '',
         'transUses': '',
         'transHome': None,
