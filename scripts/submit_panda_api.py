@@ -24,7 +24,7 @@ def main():
     parser.add_argument("--nCore", type=int, default=1, help="Number of CPU cores")
     parser.add_argument("--memory", type=int, default=4096, help="Memory in MB")
     parser.add_argument("--disk", type=int, default=None, help="Work disk count in MB")
-    parser.add_argument("--taskType", default="epicproduction", help="Task type (e.g., test, prod, analysis)")
+    parser.add_argument("--taskType", default="prod", help="Task type (test, prod, or anal)")
 
     args = parser.parse_args()
 
@@ -34,7 +34,7 @@ def main():
         'site': args.site,
         'workingGroup': args.workingGroup,
         'prodSourceLabel': args.prodSourceLabel,
-        'processingType': 'analysis',
+        'processingType': 'epicproduction',
         'taskType': args.taskType,
         'taskName': args.outDS,
         'userName': None,  # Will be filled by client
