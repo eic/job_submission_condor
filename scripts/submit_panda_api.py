@@ -114,7 +114,8 @@ def main():
                 'value': f'-a {archive_name}'
             })
 
-    # Always add command parameters
+    # Always add command parameters (replace spaces with %20 but preserve template variables)
+    encoded_cmd = args.exec_cmd.replace(' ', '%20')
     params['jobParameters'].extend([
         {
             'type': 'constant',
@@ -123,7 +124,7 @@ def main():
         },
         {
             'type': 'constant',
-            'value': args.exec_cmd
+            'value': encoded_cmd
         },
         {
             'type': 'constant',
