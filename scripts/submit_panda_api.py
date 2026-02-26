@@ -9,6 +9,7 @@ import os
 import uuid
 import re
 from pandaclient import panda_api
+from pandaclient import Client
 
 
 def main():
@@ -30,18 +31,20 @@ def main():
 
     args = parser.parse_args()
 
-    # Get PanDA client to extract sourceURL
+    # Get PanDA client
     client = panda_api.get_api()
 
-    # Extract sourceURL from client baseURL
+    # Extract sourceURL from Client class (not instance)
+    # Use baseURLSSL for VO-based submissions (matching prun logic)
     source_url = None
-    if hasattr(client, 'baseURLSSL'):
-        match = re.search(r'(https?://[^/]+)/', client.baseURLSSL)
+    if hasattr(Client, 'baseURLSSL'):
+        match = re.search(r'(https?://[^/]+)/', Client.baseURLSSL)
         if match:
             source_url = match.group(1)
 
     # Debug: print the extracted sourceURL
     print(f"DEBUG: Extracted sourceURL = {source_url}")
+    print(f"DEBUG: Client.baseURLSSL = {getattr(Client, 'baseURLSSL', 'N/A')}")
 
     # Build task parameters directly for panda client
     params = {
