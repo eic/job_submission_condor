@@ -42,7 +42,7 @@ def main():
         'architecture': '',
         'transUses': '',
         'transHome': None,
-        'transPath': '',
+        'transPath': 'https://pandaserver-doma.cern.ch/trf/user/runGen-00-00-02',
         'coreCount': args.nCore,
         'ramCount': args.memory,
         'nEvents': args.nJobs,
@@ -56,8 +56,16 @@ def main():
             }
         ],
         'multiStepExec': {
+            'preprocess': {
+                'command': '${TRF}',
+                'args': '--preprocess ${TRF_ARGS}'
+            },
+            'postprocess': {
+                'command': '${TRF}',
+                'args': '--postprocess ${TRF_ARGS}'
+            },
             'containerOptions': {
-                'containerExec': '/bin/sh __run_main_exec.sh',
+                'containerExec': 'echo "=== cat exec script ==="; cat __run_main_exec.sh; echo; echo "=== exec script ==="; /bin/sh __run_main_exec.sh',
                 'containerImage': args.containerImage
             }
         },
@@ -74,6 +82,10 @@ def main():
     if args.disk is not None:
         params['workDiskCount'] = args.disk
         params['workDiskUnit'] = 'MB'
+
+    # Add container image if specified
+    if args.containerImage:
+        params['container_name'] = args.containerImage
 
     # Add current working directory files if not noBuild
     if not args.noBuild:
