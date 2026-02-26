@@ -7,6 +7,7 @@ import sys
 import argparse
 import os
 import uuid
+import re
 from pandaclient import panda_api
 
 
@@ -114,8 +115,26 @@ def main():
                 'value': f'-a {archive_name}'
             })
 
-    # Always add command parameters (replace spaces with %20 but preserve template variables)
-    encoded_cmd = args.exec_cmd.replace(' ', '%20')
+    # Parse and handle %RNDM=X pattern (convert to ${SEQNUMBER} template)
+    rndm_offset = '0'
+    processed_cmd = args.exec_cmd
+    rndm_match = re.search(r'%RNDM(:|=)(\d+)', processed_cmd)
+    if rndm_match:
+        rndm_offset = rndm_match.group(2)
+        # Replace %RNDM=X with ${SEQNUMBER}
+        processed_cmd = re.sub(r'%RNDM(:|=)\d+', '${SEQNUMBER}', processed_cmd)
+        # Add pseudo_input template parameter
+        params['jobParameters'].insert(0, {
+            'type': 'template',
+            'param_type': 'pseudo_input',
+            'value': '${SEQNUMBER}',
+            'dataset': 'seq_number',
+            'offset': rndm_offset,
+            'padding': False
+        })
+
+    # URL-encode the command (replace spaces with %20)
+    encoded_cmd = processed_cmd.replace(' ', '%20')
     params['jobParameters'].extend([
         {
             'type': 'constant',
