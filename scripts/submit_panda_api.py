@@ -123,14 +123,14 @@ def main():
         rndm_offset = rndm_match.group(2)
         # Replace %RNDM=X with ${SEQNUMBER}
         processed_cmd = re.sub(r'%RNDM(:|=)\d+', '${SEQNUMBER}', processed_cmd)
-        # Add pseudo_input template parameter
-        params['jobParameters'].insert(0, {
+        # Add pseudo_input template parameter (after base params, before command)
+        params['jobParameters'].append({
             'type': 'template',
             'param_type': 'pseudo_input',
             'value': '${SEQNUMBER}',
             'dataset': 'seq_number',
             'offset': rndm_offset,
-            'padding': False
+            'hidden': True
         })
 
     # URL-encode the command (replace spaces with %20)
