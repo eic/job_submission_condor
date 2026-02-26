@@ -30,6 +30,16 @@ def main():
 
     args = parser.parse_args()
 
+    # Get PanDA client to extract sourceURL
+    client = panda_api.get_api()
+
+    # Extract sourceURL from client baseURL
+    source_url = None
+    if hasattr(client, 'baseURLSSL'):
+        match = re.search(r'(https?://[^/]+)/', client.baseURLSSL)
+        if match:
+            source_url = match.group(1)
+
     # Build task parameters directly for panda client
     params = {
         'vo': args.vo,
@@ -45,6 +55,7 @@ def main():
         'transUses': '',
         'transHome': None,
         'transPath': 'https://pandaserver-doma.cern.ch/trf/user/runGen-00-00-02',
+        'sourceURL': source_url,  # Set sourceURL for ${SURL} substitution
         'coreCount': args.nCore,
         'ramCount': args.memory,
         'nEvents': args.nJobs,
@@ -152,7 +163,6 @@ def main():
     ])
 
     # Submit task
-    client = panda_api.get_api()
     result = client.submit_task(params)
 
     print(f"Submission result: {result}")
