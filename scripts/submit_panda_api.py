@@ -40,6 +40,9 @@ def main():
         if match:
             source_url = match.group(1)
 
+    # Debug: print the extracted sourceURL
+    print(f"DEBUG: Extracted sourceURL = {source_url}")
+
     # Build task parameters directly for panda client
     params = {
         'vo': args.vo,
