@@ -6,6 +6,7 @@ Called from submit_csv.sh to submit tasks with resource configuration.
 import sys
 import argparse
 import os
+import uuid
 from pandaclient import panda_api
 
 
@@ -50,25 +51,11 @@ def main():
         'jobParameters': [
             {
                 'type': 'constant',
-                'value': '-j "" -r .',
+                'value': '-j "" --sourceURL ${SURL}',
             },
             {
                 'type': 'constant',
-                'value': '__delimiter__',
-                'hidden': True,
-            },
-            {
-                'type': 'constant',
-                'value': '-p "',
-                'padding': False,
-            },
-            {
-                'type': 'constant',
-                'value': args.exec_cmd,
-            },
-            {
-                'type': 'constant',
-                'value': '"',
+                'value': '-r .',
             },
         ],
         'multiStepExec': {
@@ -114,6 +101,35 @@ def main():
 
         if work_files:
             params['inputFiles'] = ','.join(work_files)
+            # Add buildSpec to create tarball with input files
+            archive_name = f'jobO.{uuid.uuid4().hex}.tar.gz'
+            params['buildSpec'] = {
+                'prodSourceLabel': 'panda',
+                'archiveName': archive_name,
+                'jobParameters': f'-i ${{IN}} -o ${{OUT}} --sourceURL ${{SURL}} -r . -a {archive_name} --noCompile'
+            }
+            # Add -a parameter for archive
+            params['jobParameters'].append({
+                'type': 'constant',
+                'value': f'-a {archive_name}'
+            })
+
+    # Always add command parameters
+    params['jobParameters'].extend([
+        {
+            'type': 'constant',
+            'value': '-p "',
+            'padding': False
+        },
+        {
+            'type': 'constant',
+            'value': args.exec_cmd
+        },
+        {
+            'type': 'constant',
+            'value': '"'
+        }
+    ])
 
     # Submit task
     client = panda_api.get_api()
