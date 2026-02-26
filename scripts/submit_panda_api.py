@@ -50,10 +50,26 @@ def main():
         'jobParameters': [
             {
                 'type': 'constant',
-                'value': f'-j "" -r . __delimiter__ {args.exec_cmd}',
+                'value': '-j "" -r .',
+            },
+            {
+                'type': 'constant',
+                'value': '__delimiter__',
+                'hidden': True,
+            },
+            {
+                'type': 'constant',
+                'value': '-p "',
                 'padding': False,
-                'offset': 0
-            }
+            },
+            {
+                'type': 'constant',
+                'value': args.exec_cmd,
+            },
+            {
+                'type': 'constant',
+                'value': '"',
+            },
         ],
         'multiStepExec': {
             'preprocess': {
