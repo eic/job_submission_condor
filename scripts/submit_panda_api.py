@@ -50,7 +50,7 @@ def main():
         'jobParameters': [
             {
                 'type': 'constant',
-                'value': args.exec_cmd,
+                'value': f'-j "" -r . __delimiter__ {args.exec_cmd}',
                 'padding': False,
                 'offset': 0
             }
