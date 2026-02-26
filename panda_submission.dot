@@ -46,9 +46,9 @@ digraph PandaSubmission {
         pilot -> rungen [label="execute"];
         rungen -> container [label="--preprocess\n(download tarball\nextract files)"];
         container -> exec_script [label="generate"];
-        exec_script -> user_code [label="execute:\npython3 submit_panda.py <N>"];
+        exec_script -> user_code [label="execute:\npython3 submit_panda.py ${SEQNUMBER}\n(converts to CSV index n-1)"];
         user_code -> output [label="produce"];
-        output -> pilot [label="--postprocess\n(upload)"];
+        output -> pilot [label="--postprocess\n(upload)\nfilename: ${JEDITASKID}.${SN}.log.tgz"];
     }
 
     // Cross-cluster connections
@@ -64,12 +64,12 @@ digraph PandaSubmission {
         color=orange;
 
         t1 [shape=note, label="Client side:\n%RNDM=0 → ${SEQNUMBER}"];
-        t2 [shape=note, label="JEDI side:\n${SURL} → https://pandaserver...\n${SEQNUMBER} → 0,1,2,..."];
-        t3 [shape=note, label="runGen side:\n$(SN) → serial number"];
+        t2 [shape=note, label="JEDI side:\n${SURL} → https://pandaserver...\n${SEQNUMBER} → 1,2,3,...\n${JEDITASKID} → task ID\n${SN} → serial number"];
+        t3 [shape=note, label="Worker side:\nSEQNUMBER 1-5 → CSV index 0-4\n(submit_panda.py: n-1)"];
 
         t1 -> scripts [style=dotted];
         t2 -> jedi [style=dotted];
-        t3 -> rungen [style=dotted];
+        t3 -> user_code [style=dotted];
     }
 
     // Key jobParameters flow
