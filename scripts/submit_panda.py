@@ -7,11 +7,14 @@ from itertools import islice
 n = int(sys.argv[1])
 csv_base = sys.argv[2]
 
+# PanDA SEQNUMBER starts from 1, but CSV is 0-indexed
+csv_index = n - 1
+
 # Memory-efficient: read only the nth row without loading entire file
 with open(f"{csv_base}.csv") as f:
     reader = csv.reader(f)
     # Skip to nth row without loading all rows into memory
-    params = next(islice(reader, n, n+1), None)
+    params = next(islice(reader, csv_index, csv_index+1), None)
     if params is None:
         print(f"Error: Row {n} not found in CSV file", file=sys.stderr)
         sys.exit(1)
