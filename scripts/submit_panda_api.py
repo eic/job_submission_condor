@@ -8,6 +8,8 @@ import argparse
 import os
 import uuid
 import re
+import tarfile
+import tempfile
 from pandaclient import panda_api
 from pandaclient import Client
 
@@ -108,29 +110,51 @@ def main():
     if args.containerImage:
         params['container_name'] = args.containerImage
 
-    # Add current working directory files if not noBuild
+    # Create and upload tarball with workDir files (matching prun --noBuild behavior)
+    archive_name = None
     if not args.noBuild:
-        # Get list of files in working directory
-        work_files = []
-        for fname in os.listdir(args.workDir):
-            fpath = os.path.join(args.workDir, fname)
-            if os.path.isfile(fpath):
-                work_files.append(fname)
+        # Create tarball from workDir files
+        archive_name = f'jobO.{uuid.uuid4().hex}.tar.gz'
 
-        if work_files:
-            params['inputFiles'] = ','.join(work_files)
-            # Add buildSpec to create tarball with input files
-            archive_name = f'jobO.{uuid.uuid4().hex}.tar.gz'
-            params['buildSpec'] = {
-                'prodSourceLabel': 'panda',
-                'archiveName': archive_name,
-                'jobParameters': f'-i ${{IN}} -o ${{OUT}} --sourceURL ${{SURL}} -r . -a {archive_name} --noCompile'
-            }
-            # Add -a parameter for archive
-            params['jobParameters'].append({
-                'type': 'constant',
-                'value': f'-a {archive_name}'
-            })
+        # Create temporary directory for tarball
+        with tempfile.TemporaryDirectory() as tmpdir:
+            archive_path = os.path.join(tmpdir, archive_name)
+
+            # Create tar.gz archive with workDir files
+            print(f"Creating tarball {archive_name} from {args.workDir}")
+            with tarfile.open(archive_path, 'w:gz') as tar:
+                for fname in os.listdir(args.workDir):
+                    fpath = os.path.join(args.workDir, fname)
+                    if os.path.isfile(fpath):
+                        # Add file with just the filename (no path)
+                        tar.add(fpath, arcname=fname)
+                        print(f"  Added: {fname}")
+
+            # Upload tarball to PanDA cache (must be done from the directory containing it)
+            print(f"Uploading {archive_name} to PanDA cache")
+            # Change to tmpdir so Client.putFile can find the file
+            old_cwd = os.getcwd()
+            os.chdir(tmpdir)
+            status, out = Client.putFile(archive_name, False, useCacheSrv=False, reuseSandbox=True)
+            os.chdir(old_cwd)
+
+            if out.startswith("NewFileName:"):
+                # Reusing existing sandbox
+                archive_name = out.split(":")[-1]
+                print(f"Reusing existing sandbox: {archive_name}")
+            elif out != "True":
+                print(f"Upload output: {out}")
+                if status != 0:
+                    print(f"ERROR: Failed to upload sandbox with status {status}")
+                    return 1
+            else:
+                print(f"Successfully uploaded {archive_name}")
+
+        # Add -a parameter to jobParameters
+        params['jobParameters'].append({
+            'type': 'constant',
+            'value': f'-a {archive_name}'
+        })
 
     # Parse and handle %RNDM=X pattern (convert to ${SEQNUMBER} template)
     rndm_offset = '0'
