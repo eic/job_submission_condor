@@ -95,7 +95,7 @@ def main():
         'log': {
             'type': 'template',
             'param_type': 'log',
-            'value': f'{args.outDS}.$(SN).log.tgz',
+            'value': f'{args.outDS}.${{SN}}.log.tgz',
             'dataset': args.outDS + '_log/',
             'hidden': False
         }
