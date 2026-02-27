@@ -131,12 +131,10 @@ else
   cd ${SUBMISSION_DIR}
 
   # Build submission command with required parameters
-  # Use group.EIC for group production, fallback to user dataset
-  DS_SCOPE=${PANDA_SCOPE:-group.EIC}
   SUBMIT_CMD="python3 submit_panda_api.py \
     --exec \"python3 submit_panda.py %RNDM=0 ${CSV_BASE}\" \
     --nJobs ${NJOBS} \
-    --outDS ${DS_SCOPE}.${DATASET_IDENTIFIER}"
+    --outDS ${RUCIO_SCOPE:-group.EIC}.${DATASET_IDENTIFIER}"
 
   # Add optional overrides if environment variables are set
   [ -n "${PANDA_AUTH_VO:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --workingGroup ${PANDA_AUTH_VO}"
