@@ -1,5 +1,5 @@
 digraph PandaSubmission {
-    rankdir=LR;
+    rankdir=TB;
     node [shape=box, style=rounded];
 
     // Clusters for different environments
