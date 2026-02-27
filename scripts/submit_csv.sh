@@ -113,7 +113,7 @@ else
   # Extract first file path from CSV and convert to dataset identifier
   FIRST_FILE=$(head -n1 ${CSV_FILE} | cut -d',' -f1)
   # Remove filename and keep directory path, then replace slashes with dots
-  DATASET_PATH=$(dirname ${FIRST_FILE})
+  DATASET_PATH=${DETECTOR_VERSION}/${DETECTOR_CONFIG}/${TAG_PREFIX}/$(dirname ${FIRST_FILE})
   DATASET_IDENTIFIER=${DATASET_PATH//\//.}
 
   # Move generated files into submission directory
