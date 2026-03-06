@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--nJobs", type=int, required=True, help="Number of jobs")
     parser.add_argument("--outDS", required=True, help="Output dataset name")
     parser.add_argument("--workingGroup", default="EIC", help="Working group")
-    parser.add_argument("--vo", default="wlcg", help="Virtual organization")
+    parser.add_argument("--vo", default="epic", help="Virtual organization")
     parser.add_argument("--site", default="BNL_OSG_PanDA_1", help="PanDA site")
     parser.add_argument("--prodSourceLabel", default="test", help="Production source label")
     parser.add_argument("--noBuild", action="store_true", default=False, help="Skip build step")
