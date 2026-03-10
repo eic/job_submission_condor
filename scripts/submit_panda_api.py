@@ -98,7 +98,7 @@ def main():
             'param_type': 'log',
             'value': f'{args.outDS}.$JEDITASKID.${{SN}}.log.tgz',
             'dataset': args.outDS + '_log/',
-            'hidden': False
+            'hidden': True
         }
     }
 
