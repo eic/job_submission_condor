@@ -59,6 +59,7 @@ def main():
         'taskName': args.outDS,
         'userName': None,  # Will be filled by client
         'noInput': True,  # Task does not require input datasets
+        'noOutput': True,  # Do not register output files; only payload/pilot logs are kept
         'architecture': '',
         'transUses': '',
         'transHome': None,
