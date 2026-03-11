@@ -116,6 +116,7 @@ else
   # Remove filename and keep directory path, then replace slashes with dots
   DATASET_PATH=${DETECTOR_VERSION}/${DETECTOR_CONFIG}/${TAG_PREFIX}/$(dirname ${FIRST_FILE})
   DATASET_IDENTIFIER=${DATASET_PATH//\//.}
+  DATASET_IDENTIFIER=${DATASET_IDENTIFIER//=/-}
 
   # Move generated files into submission directory
   mv ${ENVIRONMENT} ${SUBMISSION_DIR}/
