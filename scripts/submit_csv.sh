@@ -145,6 +145,8 @@ else
   [ -n "${PANDA_MEMORY:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --memory ${PANDA_MEMORY}"
   [ -n "${PANDA_DISK:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --disk ${PANDA_DISK}"
   [ -n "${JUG_XL_TAG:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}"
+  [ -n "${PANDA_WALLTIME:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --walltime ${PANDA_WALLTIME}"
+  [ -n "${PANDA_SKIP_SCOUT:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --skipScout"
 
   eval $SUBMIT_CMD
 fi
