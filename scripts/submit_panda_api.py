@@ -30,6 +30,8 @@ def main():
     parser.add_argument("--memory", type=int, default=4096, help="Memory in MB")
     parser.add_argument("--disk", type=int, default=4096, help="Work disk count in MB")
     parser.add_argument("--taskType", default="prod", help="Task type (test, prod, or anal)")
+    parser.add_argument("--skipScout", action="store_true", default=False, help="Skip scout jobs (expert option; only effective for production tasks)")
+    parser.add_argument("--walltime", type=float, default=2.0, help="Wall time limit in hours; acts as a floor when scouts are enabled (default: 2)")
 
     args = parser.parse_args()
 
@@ -106,6 +108,14 @@ def main():
     if args.disk is not None:
         params['workDiskCount'] = args.disk
         params['workDiskUnit'] = 'MB'
+
+    # Skip scout jobs if requested (expert option; only effective for production tasks)
+    if args.skipScout:
+        params['skipScout'] = True
+
+    # Set walltime (in hours, converted to seconds for PanDA)
+    # Acts as a floor when scouts are enabled; used directly when skipScout is set
+    params['walltime'] = int(args.walltime * 3600)
 
     # Add container image if specified
     if args.containerImage:
