@@ -1,0 +1,47 @@
+batch_name = %DETECTOR_VERSION%/%DETECTOR_CONFIG%/%CSV_FILE%
+
+universe   = vanilla
+executable = %EXECUTABLE%
+arguments  = %ARGUMENTS%
+
+# Log files
+error  = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).err
+output = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).out
+log    = LOG/CONDOR/osg_$(Cluster)/osg_$(Cluster)_$(Process).log
+
+# OAuth services (https://jlab.servicenowservices.com/kb_view.do?sysparm_article=KB0014968)
+# use_oauth_services = eic
+
+# Input file
+transfer_input_files = %INPUT_FILES%
+
+# Send the job to Held state on failure.
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+
+# Periodically retry the jobs every 10 minutes, up to a maximum of 2 retries.
+#periodic_release =  (NumJobStarts < 2) && (HoldReasonCode == 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
++ProjectName="ePIC"
++SingularityImage="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_dev_cuda:%JUG_XL_TAG%"
+
+Requirements = HAS_SINGULARITY == TRUE && HAS_CVMFS_singularity_opensciencegrid_org == TRUE && OSG_HOST_KERNEL_VERSION >= 31000 && TARGET.Microarch >= "x86_64-v2"
+
++UNDESIRED_Sites = "AMNH,BEOCAT-SLATE,FNAL_GPGrid,FNAL,Wisconsin,GATech,OSG_US_FSU_HNPGRID,Alabama-CHPC,Clemson-Palmetto"
+# AMNH nodes block connections over web
+# BE0CAT-SLATE, FNAL_GPGrid, FNAL, GATech cannot read input files
+# OSG_US_FSU_HNPGRID cannot connect to logging RSE
+# Alabama-CHPC cannot connect to JLAB Rucio service
+# Wisconsin Date errors
+
+request_cpus   = 1
+request_memory = 3.8 GB
+request_disk   = 2.2 GB
+request_gpus   = 1
+
+# Require Ampere (compute capability >= 8.0, i.e. CUDA arch > 75) with at least 16 GB VRAM
+gpus_minimum_capability = 8.0
+gpus_minimum_memory     = 16000
+
+max_idle = 500
+
+queue file,ext,nevents,ichunk from %CSV_FILE%

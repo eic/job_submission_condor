@@ -30,6 +30,12 @@ shift
 TARGET=${1:-2}
 shift
 
+# USE_GPU and osg_csv_gpu template are equivalent; either implies the other
+if [ -n "${USE_GPU:-}" ] || [ "${TEMPLATE}" = "osg_csv_gpu" ]; then
+  USE_GPU=1
+  TEMPLATE="osg_csv_gpu"
+fi
+
 
 SCRIPTS_DIR=$(dirname $0)
 # process csv file into jobs
@@ -144,7 +150,11 @@ else
   [ -n "${PANDA_NCORE:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --nCore ${PANDA_NCORE}"
   [ -n "${PANDA_MEMORY:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --memory ${PANDA_MEMORY}"
   [ -n "${PANDA_DISK:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --disk ${PANDA_DISK}"
-  [ -n "${JUG_XL_TAG:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}"
+  if [ -n "${USE_GPU:-}" ]; then
+    SUBMIT_CMD="$SUBMIT_CMD --useGPU --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_dev_cuda:${JUG_XL_TAG:-nightly}"
+  else
+    [ -n "${JUG_XL_TAG:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}"
+  fi
   [ -n "${PANDA_WALLTIME:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --walltime ${PANDA_WALLTIME}"
   [ -n "${PANDA_SKIP_SCOUT:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --skipScout"
 
