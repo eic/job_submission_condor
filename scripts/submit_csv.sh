@@ -132,6 +132,7 @@ else
   # Copy scripts and external files
   cp ${SCRIPTS_DIR}/submit_panda.py ${SUBMISSION_DIR}/
   cp ${SCRIPTS_DIR}/submit_panda_api.py ${SUBMISSION_DIR}/
+  [ -d "${SCRIPTS_DIR}/../celeritas" ] && cp -r ${SCRIPTS_DIR}/../celeritas ${SUBMISSION_DIR}/
   [ -n "${X509_USER_PROXY:-}" ] && cp ${X509_USER_PROXY} ${SUBMISSION_DIR}/
   [ -n "${BG_FILES:-}" ] && cp ${BG_FILES} ${SUBMISSION_DIR}/
 

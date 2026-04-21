@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 import csv
 from itertools import islice
 
@@ -14,14 +15,50 @@ csv_index = n - 1
 with open(f"{csv_base}.csv") as f:
     reader = csv.reader(f)
     # Skip to nth row without loading all rows into memory
-    params = next(islice(reader, csv_index, csv_index+1), None)
+    params = next(islice(reader, csv_index, csv_index + 1), None)
     if params is None:
         print(f"Error: Row {n} not found in CSV file", file=sys.stderr)
         sys.exit(1)
 
-# execute directly without shell
+# CSV columns: numberOfEvents, seed
+n_events = params[0]
+seed = params[1]
+
+# Build Celeritas from source
+src_dir = os.path.abspath("celeritas")
+build_dir = os.path.abspath("build")
+install_dir = os.path.abspath("install")
+
+os.makedirs(build_dir, exist_ok=True)
+
+print(f"=== Configuring Celeritas ===")
+result = subprocess.run([
+    "cmake",
+    f"-DCMAKE_INSTALL_PREFIX={install_dir}",
+    "-DCELERITAS_USE_CUDA=ON",
+    "-DCELERITAS_USE_DD4hep=ON",
+    "-DCMAKE_CUDA_ARCHITECTURES=native",
+    "-DCELERITAS_USE_VecGeom=ON",
+    "-S", src_dir,
+    "-B", build_dir,
+], text=True)
+if result.returncode != 0:
+    print("ERROR: CMake configure failed", file=sys.stderr)
+    sys.exit(result.returncode)
+
+print(f"=== Building Celeritas ===")
+result = subprocess.run(["ninja", "install"], cwd=build_dir, text=True)
+if result.returncode != 0:
+    print("ERROR: Build failed", file=sys.stderr)
+    sys.exit(result.returncode)
+
+# Run ddceler example
+os.environ["Celeritas_ROOT"] = install_dir
+
+run_script = os.path.join(src_dir, "example", "ddceler", "run-preshower.sh")
+print(f"=== Running ddceler: {n_events} events, seed {seed} ===")
 result = subprocess.run(
-    ["/opt/campaigns/hepmc3/scripts/run.sh", f"EVGEN/{params[0]}", params[1], params[2], params[3]],
-    text=True
+    [run_script, "celeritas", f"--numberOfEvents={n_events}", f"--random.seed={seed}"],
+    text=True,
 )
 sys.exit(result.returncode)

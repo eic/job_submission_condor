@@ -142,10 +142,8 @@ def main():
             with tarfile.open(archive_path, 'w:gz') as tar:
                 for fname in os.listdir(args.workDir):
                     fpath = os.path.join(args.workDir, fname)
-                    if os.path.isfile(fpath):
-                        # Add file with just the filename (no path)
-                        tar.add(fpath, arcname=fname)
-                        print(f"  Added: {fname}")
+                    tar.add(fpath, arcname=fname)
+                    print(f"  Added: {fname}")
 
             # Upload tarball to PanDA cache (must be done from the directory containing it)
             print(f"Uploading {archive_name} to PanDA cache")
