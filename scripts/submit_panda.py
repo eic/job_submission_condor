@@ -46,6 +46,7 @@ os.makedirs(build_dir, exist_ok=True)
 print(f"=== Configuring Celeritas ===")
 result = subprocess.run([
     "cmake",
+    "-GNinja",
     f"-DCMAKE_INSTALL_PREFIX={install_dir}",
     "-DCELERITAS_USE_CUDA=ON",
     "-DCELERITAS_USE_DD4hep=ON",
