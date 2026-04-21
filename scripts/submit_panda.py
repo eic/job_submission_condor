@@ -24,10 +24,22 @@ with open(f"{csv_base}.csv") as f:
 n_events = params[0]
 seed = params[1]
 
-# Build Celeritas from source
+# Clone Celeritas from fork
+CELERITAS_REPO = "https://github.com/rahmans1/celeritas.git"
+CELERITAS_BRANCH = "enable-dd4hep-particle-handler"
+
 src_dir = os.path.abspath("celeritas")
 build_dir = os.path.abspath("build")
 install_dir = os.path.abspath("install")
+
+print(f"=== Cloning Celeritas ({CELERITAS_BRANCH}) ===")
+result = subprocess.run([
+    "git", "clone", "--branch", CELERITAS_BRANCH, "--depth", "1",
+    CELERITAS_REPO, src_dir,
+], text=True)
+if result.returncode != 0:
+    print("ERROR: git clone failed", file=sys.stderr)
+    sys.exit(result.returncode)
 
 os.makedirs(build_dir, exist_ok=True)
 
