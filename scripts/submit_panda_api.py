@@ -86,11 +86,11 @@ def main():
         'multiStepExec': {
             'preprocess': {
                 'command': '${TRF}',
-                'args': '--preprocess ${TRF_ARGS}'
+                'args': '--preprocess -j "" --sourceURL ${SURL}'
             },
             'postprocess': {
                 'command': '${TRF}',
-                'args': '--postprocess ${TRF_ARGS}'
+                'args': '--postprocess -j "" --sourceURL ${SURL}'
             },
             'containerOptions': {
                 'containerExec': 'echo "=== cat exec script ==="; cat __run_main_exec.sh; echo; echo "=== exec script ==="; /bin/sh __run_main_exec.sh',
