@@ -165,11 +165,13 @@ def main():
             else:
                 print(f"Successfully uploaded {archive_name}")
 
-        # Add -a parameter to jobParameters
+        # Add -a parameter to jobParameters and preprocess/postprocess args
         params['jobParameters'].append({
             'type': 'constant',
             'value': f'-a {archive_name}'
         })
+        params['multiStepExec']['preprocess']['args'] += f' -a {archive_name}'
+        params['multiStepExec']['postprocess']['args'] += f' -a {archive_name}'
 
     # Parse and handle %RNDM=X pattern (convert to ${SEQNUMBER} template)
     rndm_offset = '0'
