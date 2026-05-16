@@ -71,7 +71,6 @@ def main():
         'ramCount': args.memory,
         'nEvents': args.nJobs,
         'nEventsPerJob': 1,
-        'cpuTimeUnit': 'HS06sPerEvent',
         'jobParameters': [
             {
                 'type': 'constant',
@@ -113,12 +112,15 @@ def main():
     # Skip scout jobs if requested (expert option; only effective for production tasks)
     if args.skipScout:
         params['skipScout'] = True
+    else:
+        params['cpuTimeUnit'] = 'HS06sPerEvent'
 
     # Set walltime in seconds. Used directly when skipScout is set.
     # When scouts run, this acts as a floor (preserved if larger than scout-derived value).
-    # cpuTimeUnit='HS06sPerEvent' routes brokerage through the HS06 path (cpuTime * nEventsPerJob)
-    # rather than the kSI2kseconds path (walltime / inputFileSize), which breaks for noInput tasks
-    # because pseudo_input files have a dummy 1MB size that inflates the per-MB walltime estimate.
+    # For scout-enabled tasks, cpuTimeUnit='HS06sPerEvent' routes post-scout brokerage through
+    # the HS06 path (cpuTime * nEventsPerJob) rather than the kSI2kseconds path
+    # (walltime / inputFileSize), which breaks for noInput tasks because pseudo_input files
+    # have a dummy 1MB size that inflates the per-MB walltime estimate.
     params['walltime'] = int(args.walltime * 3600)
 
     # Add container image if specified
