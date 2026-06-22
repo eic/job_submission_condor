@@ -36,7 +36,7 @@ output=$(basename ${FILE} .csv)-$(date --iso-8601=minutes).csv
     ${0} ${TEMPLATE} ${TYPE} ${file} ${TARGET}
   else
     nevents=$(echo "scale=0; n=(3600*$TARGET-$dt0)/$dt1; if (n>$ntotal) print($ntotal) else print(n)" | bc -l)
-    if [ -n "${MAX_EVENTS_PER_CHUNK}" ] && { [ "${nevents}" -le 0 ] || [ "${nevents}" -gt "${MAX_EVENTS_PER_CHUNK}" ]; }; then
+    if [ -n "${MAX_EVENTS_PER_CHUNK:-}" ] && { [ "${nevents}" -le 0 ] || [ "${nevents}" -gt "${MAX_EVENTS_PER_CHUNK}" ]; }; then
       nevents=${MAX_EVENTS_PER_CHUNK}
     fi
     nchunks=$(echo "scale=0; n=$ntotal/$nevents+1; if (n==0) print(1) else print(n)" | bc -l)
