@@ -59,6 +59,7 @@ sed "
   s|%COPYLOG%|${COPYLOG:-}|g;
   s|%USERUCIO%|${USERUCIO:-}|g;
   s|%OUT_RSE%|${OUT_RSE:-}|g;
+  s|%LOG_RSE%|${LOG_RSE:-}|g;
   s|%X509_USER_PROXY%|${X509_USER_PROXY_BASE:-}|g;
   s|%TAG_PREFIX%|${TAG_PREFIX:-}|g;
   s|%TAG_SUFFIX%|${TAG_SUFFIX:-}|g;
