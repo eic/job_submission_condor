@@ -109,6 +109,11 @@ else
   SUBMISSION_DIR="${CSV_BASE}"
   mkdir -p ${SUBMISSION_DIR}
 
+  # Cap CSV rows if MAX_JOBS set so sandbox only ships rows that will actually run
+  if [ -n "${MAX_JOBS:-}" ] && [ "$(grep . ${CSV_FILE} | wc -l)" -gt "${MAX_JOBS}" ]; then
+    head -n ${MAX_JOBS} ${CSV_FILE} > ${CSV_FILE}.tmp && mv ${CSV_FILE}.tmp ${CSV_FILE}
+  fi
+
   # Count jobs before moving the CSV file
   NJOBS=$(grep . ${CSV_FILE} | wc -l)
 
