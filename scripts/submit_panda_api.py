@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--taskType", default="prod", help="Task type (test, prod, or anal)")
     parser.add_argument("--skipScout", action="store_true", default=False, help="Skip scout jobs (expert option; only effective for production tasks)")
     parser.add_argument("--walltime", type=float, default=2.0, help="Wall time limit in hours; acts as a floor when scouts are enabled (default: 2)")
+    parser.add_argument("--maxAttempt", type=int, default=-1, help="Max reattempts per job (PanDA default 3, cap 50)")
 
     args = parser.parse_args()
 
@@ -122,6 +123,9 @@ def main():
     # (walltime / inputFileSize), which breaks for noInput tasks because pseudo_input files
     # have a dummy 1MB size that inflates the per-MB walltime estimate.
     params['walltime'] = int(args.walltime * 3600)
+
+    if args.maxAttempt > 0 and args.maxAttempt <= 50:
+        params['maxAttempt'] = args.maxAttempt
 
     # Add container image if specified
     if args.containerImage:

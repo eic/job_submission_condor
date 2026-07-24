@@ -154,6 +154,7 @@ else
   [ -n "${JUG_XL_TAG:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}"
   [ -n "${PANDA_WALLTIME:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --walltime ${PANDA_WALLTIME}"
   [ -n "${PANDA_SKIP_SCOUT:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --skipScout"
+  [ -n "${PANDA_MAX_ATTEMPT:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --maxAttempt ${PANDA_MAX_ATTEMPT}"
 
   eval $SUBMIT_CMD
 fi
