@@ -17,7 +17,7 @@ export BASEJOB="?job=collect"
 BKGURL="https://eicweb.phy.anl.gov/EIC/campaigns/datasets/-/raw/${DATASET_TAG:-main}/config_data"
 
 # Parse arguments
-# - condor template
+# - environment template
 TEMPLATE=${1}
 shift
 # - type of simulation
@@ -30,17 +30,16 @@ shift
 TARGET=${1:-2}
 shift
 
+
+SCRIPTS_DIR=$(dirname $0)
 # process csv file into jobs
 if [ -n "${CSV_FILE:-}" ]; then
   # allow to set custom csv file for job instead of fetching from web archive
   CSV_FILE=$(realpath -e ${CSV_FILE})
 else
-  CSV_FILE=$($(dirname $0)/csv_to_chunks.sh ${FILE} ${TARGET})
+  CSV_FILE=$(${SCRIPTS_DIR}/csv_to_chunks.sh ${FILE} ${TARGET})
 fi
-
-# create command line
-EXECUTABLE="$(dirname $0)/run.sh"
-ARGUMENTS="EVGEN/\$(file) \$(ext) \$(nevents) \$(ichunk)"
+CSV_BASE=$(basename ${CSV_FILE} .csv)
 
 # Set background environment variables
 if [ -n "${BG_FILES:-}" ]; then
@@ -48,7 +47,7 @@ if [ -n "${BG_FILES:-}" ]; then
 fi
 
 # construct environment file
-ENVIRONMENT=environment-$(basename ${CSV_FILE} .csv).sh
+ENVIRONMENT=environment-${CSV_BASE}.sh
 
 # extract certificate name
 X509_USER_PROXY_BASE=$(basename ${X509_USER_PROXY:-})
@@ -72,32 +71,54 @@ sed "
   s|%BG_FILES%|${BG_FILES:-}|g;
 " templates/${TEMPLATE}.sh.in > ${ENVIRONMENT}
 
-# construct requirements
-REQUIREMENTS=""
+# PanDA mode - organize into directory
+SUBMISSION_DIR="${CSV_BASE}"
+mkdir -p ${SUBMISSION_DIR}
 
-# construct input files
-INPUT_FILES=${ENVIRONMENT},${X509_USER_PROXY}
-INPUT_FILES="${INPUT_FILES}${BG_FILES:+,${BG_FILES}}"
-
-# construct submission file
-SUBMIT_FILE=$(basename ${CSV_FILE} .csv).submit
-sed "
-  s|%EXECUTABLE%|${EXECUTABLE}|g;
-  s|%ARGUMENTS%|${ARGUMENTS}|g;
-  s|%JUG_XL_TAG%|${JUG_XL_TAG:-nightly}|g;
-  s|%DETECTOR_VERSION%|${DETECTOR_VERSION}|g;
-  s|%DETECTOR_CONFIG%|${DETECTOR_CONFIG}|g;
-  s|%INPUT_FILES%|${INPUT_FILES}|g;
-  s|%REQUIREMENTS%|${REQUIREMENTS}|g;
-  s|%CSV_FILE%|${CSV_FILE}|g;
-" templates/${TEMPLATE}.submit.in > ${SUBMIT_FILE}
-
-# submit job
-condor_submit -verbose -file ${SUBMIT_FILE}
-
-# create log dir
-if [ $? -eq 0 ] ; then
-  for i in `condor_q --batch | grep ^${USER} | tail -n1 | awk '{print($NF)}' | cut -d. -f1` ; do
-    mkdir -p LOG/CONDOR/osg_$i/
-  done
+# Cap CSV rows if MAX_JOBS set so sandbox only ships rows that will actually run
+if [ -n "${MAX_JOBS:-}" ] && [ "$(grep . ${CSV_FILE} | wc -l)" -gt "${MAX_JOBS}" ]; then
+  head -n ${MAX_JOBS} ${CSV_FILE} > ${CSV_FILE}.tmp && mv ${CSV_FILE}.tmp ${CSV_FILE}
 fi
+
+# Count jobs before moving the CSV file
+NJOBS=$(grep . ${CSV_FILE} | wc -l)
+
+# Extract first file path from CSV and convert to dataset identifier
+FIRST_FILE=$(head -n1 ${CSV_FILE} | cut -d',' -f1)
+# Remove filename and keep directory path, then replace slashes with dots
+DATASET_PATH=${DETECTOR_VERSION}/${DETECTOR_CONFIG}${TAG_PREFIX:+/${TAG_PREFIX}}/$(dirname ${FIRST_FILE})
+DATASET_IDENTIFIER=${DATASET_PATH//\//.}
+DATASET_IDENTIFIER=${DATASET_IDENTIFIER//=/-}
+DATASET_IDENTIFIER=${DATASET_IDENTIFIER//+/_plus}
+
+# Move generated files into submission directory
+mv ${ENVIRONMENT} ${SUBMISSION_DIR}/
+mv ${CSV_FILE} ${SUBMISSION_DIR}/
+
+# Copy scripts and external files
+cp ${SCRIPTS_DIR}/submit_panda.py ${SUBMISSION_DIR}/
+cp ${SCRIPTS_DIR}/submit_panda_api.py ${SUBMISSION_DIR}/
+[ -n "${X509_USER_PROXY:-}" ] && cp ${X509_USER_PROXY} ${SUBMISSION_DIR}/
+[ -n "${BG_FILES:-}" ] && cp ${BG_FILES} ${SUBMISSION_DIR}/
+
+# Change into submission directory and run Python API submission
+cd ${SUBMISSION_DIR}
+
+# Build submission command with required parameters
+SUBMIT_CMD="python3 submit_panda_api.py \
+  --exec \"python3 submit_panda.py %RNDM=0 ${CSV_BASE}\" \
+  --nJobs ${NJOBS} \
+  --outDS ${RUCIO_SCOPE:-group.EIC}.${DATASET_IDENTIFIER}"
+
+# Add optional overrides if environment variables are set
+[ -n "${PANDA_AUTH_VO:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --workingGroup ${PANDA_AUTH_VO}"
+[ -n "${PANDA_SITE:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --site ${PANDA_SITE}"
+[ -n "${PANDA_NCORE:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --nCore ${PANDA_NCORE}"
+[ -n "${PANDA_MEMORY:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --memory ${PANDA_MEMORY}"
+[ -n "${PANDA_DISK:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --disk ${PANDA_DISK}"
+[ -n "${JUG_XL_TAG:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --containerImage /cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:${JUG_XL_TAG}"
+[ -n "${PANDA_WALLTIME:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --walltime ${PANDA_WALLTIME}"
+[ -n "${PANDA_SKIP_SCOUT:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --skipScout"
+[ -n "${PANDA_MAX_ATTEMPT:-}" ] && SUBMIT_CMD="$SUBMIT_CMD --maxAttempt ${PANDA_MAX_ATTEMPT}"
+
+eval $SUBMIT_CMD
